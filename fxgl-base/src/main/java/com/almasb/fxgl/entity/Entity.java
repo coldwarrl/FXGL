@@ -86,6 +86,15 @@ public class Entity {
         addComponent(view);
     }
 
+    public Entity(String id, String name, String modelId)
+    {
+        this();
+        this.id = id;
+        this.name = name;
+        this.modelId = modelId;
+    }
+
+
     /**
      * @return the world this entity is attached to
      */
@@ -857,6 +866,26 @@ public class Entity {
     @Override
     public String toString() {
         return "Entity(" + "components=" + components + ")";
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public Entity getParent() {
+        return parent;
+    }
+
+    public void setParent(Entity parent) {
+        this.parent = parent;
+    }
+
+    public String getModelId() {
+        return modelId;
     }
 
     public String getId() {
