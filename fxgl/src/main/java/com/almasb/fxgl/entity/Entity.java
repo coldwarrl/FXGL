@@ -69,6 +69,11 @@ public class Entity {
     private BoundingBoxComponent bbox = new BoundingBoxComponent();
     private ViewComponent view = new ViewComponent();
 
+    private Entity parent = null;
+    private String modelId = "";
+    private String id = "";
+    private String name = "";
+
     public Entity() {
         addComponent(type);
         addComponent(position);
@@ -76,6 +81,15 @@ public class Entity {
         addComponent(bbox);
         addComponent(view);
     }
+
+    public Entity(String id, String name, String modelId)
+    {
+        this();
+        this.id = id;
+        this.name = name;
+        this.modelId = modelId;
+    }
+
 
     /**
      * @return the world this entity is attached to
@@ -951,5 +965,25 @@ public class Entity {
         return "Entity("
                 + String.join("\n", "components=" + components, "controls=" + controls)
                 + ")";
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public Entity getParent() {
+        return parent;
+    }
+
+    public void setParent(Entity parent) {
+        this.parent = parent;
+    }
+
+    public String getModelId() {
+        return modelId;
     }
 }
