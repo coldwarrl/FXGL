@@ -83,6 +83,15 @@ public class Entity {
         addComponent(view);
     }
 
+    public Entity(String id, String name, String modelId)
+    {
+        this();
+        this.id = id;
+        this.name = name;
+        this.modelId = modelId;
+    }
+
+
     /**
      * @return the world this entity is attached to
      */
