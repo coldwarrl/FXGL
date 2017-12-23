@@ -887,4 +887,24 @@ public class Entity {
     public String getModelId() {
         return modelId;
     }
+
+    public String getId() {
+        return id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public Entity getParent() {
+        return parent;
+    }
+
+    public void setParent(Entity parent) {
+        this.parent = parent;
+    }
+
+    public String getModelId() {
+        return modelId;
+    }
 }
