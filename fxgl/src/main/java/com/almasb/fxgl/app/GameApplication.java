@@ -42,8 +42,14 @@ import javafx.application.Platform;
 import javafx.beans.property.ReadOnlyIntegerWrapper;
 import javafx.beans.property.ReadOnlyLongWrapper;
 import javafx.geometry.Rectangle2D;
+import javafx.scene.control.Menu;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
+import kotlin.reflect.KClass;
+import org.jetbrains.annotations.NotNull;
+import tornadofx.App;
+import tornadofx.FX;
+import tornadofx.UIComponent;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -84,6 +90,8 @@ public abstract class GameApplication extends Application {
     private ReadOnlyGameSettings settings;
     private AppStateMachine stateMachine;
 
+
+
     /**
      * This is the main entry point as run by the JavaFX platform.
      */
@@ -97,6 +105,8 @@ public abstract class GameApplication extends Application {
 
             showPreloadingStage();
             startFXGL();
+            FX.registerApplication(this, stage);
+
         } catch (Exception e) {
             handleFatalErrorBeforeLaunch(e);
         }
@@ -679,6 +689,8 @@ public abstract class GameApplication extends Application {
     public final GameScene getGameScene() {
         return playState.getGameScene();
     }
+
+    public Menu developerCustomMenu;
 
     public final Gameplay getGameplay() {
         return FXGL.getGameplay();
