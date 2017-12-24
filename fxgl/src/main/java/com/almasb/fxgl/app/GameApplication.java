@@ -99,19 +99,6 @@ public abstract class GameApplication extends Application {
     private GameWorld injectableGameWorld; //used in mocking
 
 
-
-    }
-    public GameWorld getInjectableGameWorld() {
-        return injectableGameWorld;
-    }
-
-    public void setInjectableGameWorld(GameWorld injectableGameWorld) {
-        this.injectableGameWorld = injectableGameWorld;
-    }
-
-    private GameWorld injectableGameWorld; //used in mocking
-
-
     /**
      * May be overridden for custom game world
      *
@@ -139,6 +126,7 @@ public abstract class GameApplication extends Application {
             showPreloadingStage();
 
             FX.registerApplication(this, stage);
+
 
             log.debug("Starting FXGL");
 
