@@ -43,8 +43,14 @@ import javafx.beans.property.ReadOnlyIntegerWrapper;
 import javafx.beans.property.ReadOnlyLongWrapper;
 import javafx.concurrent.Task;
 import javafx.geometry.Rectangle2D;
+import javafx.scene.control.Menu;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
+import kotlin.reflect.KClass;
+import org.jetbrains.annotations.NotNull;
+import tornadofx.App;
+import tornadofx.FX;
+import tornadofx.UIComponent;
 
 import java.util.*;
 
@@ -102,6 +108,9 @@ public abstract class GameApplication extends Application {
             initMainWindow(stage);
 
             showPreloadingStage();
+
+            FX.registerApplication(this, stage);
+
 
             log.debug("Starting FXGL");
 
@@ -672,6 +681,8 @@ public abstract class GameApplication extends Application {
     public final GameScene getGameScene() {
         return playState.getGameScene();
     }
+
+    public Menu developerCustomMenu;
 
     public final Gameplay getGameplay() {
         return FXGL.getGameplay();
