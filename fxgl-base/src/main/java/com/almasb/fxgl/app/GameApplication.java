@@ -130,6 +130,7 @@ public abstract class GameApplication extends Application {
 
             showPreloadingStage();
             startFXGL();
+
             FX.registerApplication(this, stage);
 
             log.debug("Starting FXGL");
