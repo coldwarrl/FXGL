@@ -29,8 +29,4 @@
         <CheckMenuItem text="Track Clicks" onAction="#onTrackClicks" />
     </Menu>
 
-    <Menu fx:id="menuCustom" text="Custom">
-
-    </Menu>
-
 </DeveloperMenuBar>

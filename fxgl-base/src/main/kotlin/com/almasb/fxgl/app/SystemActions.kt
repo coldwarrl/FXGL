@@ -6,6 +6,7 @@
 
 package com.almasb.fxgl.app
 
+import com.almasb.fxgl.devtools.DeveloperMenuBar
 import com.almasb.fxgl.core.logging.Logger
 import com.almasb.fxgl.devtools.DeveloperTools
 import com.almasb.fxgl.input.Input
@@ -51,6 +52,10 @@ object SystemActions {
 
             if (devUI == null) {
                 devUI = FXGL.getAssetLoader().loadUI("dev_menu_bar.fxml", DeveloperMenuBarController())
+                if (FXGL.getApp().developerCustomMenu != null) {
+                    val menuBar = devUI!!.root as DeveloperMenuBar
+                    menuBar.menus.add(FXGL.getApp().developerCustomMenu)
+                }
             }
 
             if (devBarOpen) {
