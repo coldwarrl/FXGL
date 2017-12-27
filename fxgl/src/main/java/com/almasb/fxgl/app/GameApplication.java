@@ -91,6 +91,14 @@ public abstract class GameApplication extends Application {
     private AppStateMachine stateMachine;
 
 
+    /**
+     * May be overridden for custom game world
+     * @return
+     */
+    public GameWorld createGameWorld()
+    {
+        return new GameWorld();
+    }
 
     /**
      * This is the main entry point as run by the JavaFX platform.
