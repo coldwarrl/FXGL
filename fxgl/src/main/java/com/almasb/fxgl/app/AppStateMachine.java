@@ -48,7 +48,7 @@ public final class AppStateMachine {
         appState = new StartupState(app);
 
         loading = new LoadingState(app, sceneFactory);
-        play = new PlayState(sceneFactory);
+        play = new PlayState(sceneFactory, app);
 
         // reasonable hack to trigger dialog state init before intro and menus
         DialogSubState.INSTANCE.getView();
