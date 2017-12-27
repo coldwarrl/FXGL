@@ -99,6 +99,7 @@ public abstract class GameApplication extends Application {
     private ReadOnlyGameSettings settings;
     private AppStateMachine stateMachine;
 
+
     public GameWorld getInjectableGameWorld() {
         return injectableGameWorld;
     }

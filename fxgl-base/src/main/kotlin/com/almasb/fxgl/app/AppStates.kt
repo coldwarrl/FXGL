@@ -48,7 +48,6 @@ internal constructor(private val app: GameApplication, scene: FXGLScene) : AppSt
         }
     }
 }
-
 /**
  * Plays intro animation.
  * State is active only once.
@@ -189,14 +188,14 @@ internal constructor(private val app: GameApplication, scene: FXGLScene) : AppSt
         }
     }
 }
-
 /**
  * State is active when the game is being played.
  * The state in which the player will spend most of the time.
  */
 internal class PlayState
 (sceneFactory: SceneFactory, app: GameApplication) : AppState(sceneFactory.newGameScene()) {
-internal constructor(scene: FXGLScene) : AppState(scene) {
+    internal constructor(scene: FXGLScene) : AppState(scene) {
+
 
     val gameState: GameState
     val gameWorld: GameWorld
@@ -208,6 +207,7 @@ internal constructor(scene: FXGLScene) : AppState(scene) {
     init {
         gameState = GameState()
         gameWorld = app.createGameWorld()
+        physicsWorld = PhysicsWorld(FXGL.getAppHeight(), FXGL.getDouble("physics.ppm"))
 
         gameWorld.addWorldListener(physicsWorld)
 
