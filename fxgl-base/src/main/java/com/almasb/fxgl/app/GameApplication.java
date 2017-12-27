@@ -146,6 +146,14 @@ public abstract class GameApplication extends Application {
     }
 
 
+    /**
+     * May be overridden for custom game world
+     * @return
+     */
+    public GameWorld createGameWorld()
+    {
+        return new GameWorld();
+    }
 
     /**
      * May be overridden for custom game world
