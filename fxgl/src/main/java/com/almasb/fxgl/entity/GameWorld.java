@@ -34,7 +34,7 @@ import java.util.stream.Collectors;
  *
  * @author Almas Baimagambetov (AlmasB) (almaslvl@gmail.com)
  */
-public final class GameWorld {
+public class GameWorld {
 
     private static Logger log = Logger.get("FXGL.GameWorld");
     

@@ -93,6 +93,14 @@ public abstract class GameApplication extends Application {
     private AppStateMachine stateMachine;
 
 
+    /**
+     * May be overridden for custom game world
+     * @return
+     */
+    public GameWorld createGameWorld()
+    {
+        return new GameWorld();
+    }
 
     MainWindow getMainWindow() {
         return mainWindow;
