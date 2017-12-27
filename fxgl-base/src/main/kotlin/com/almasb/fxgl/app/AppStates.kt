@@ -208,6 +208,7 @@ internal constructor(scene: FXGLScene) : AppState(scene) {
     init {
         gameState = GameState()
         gameWorld = app.createGameWorld()
+
         gameWorld.addWorldListener(physicsWorld)
 
         gameWorld.addWorldListener(gameScene)
