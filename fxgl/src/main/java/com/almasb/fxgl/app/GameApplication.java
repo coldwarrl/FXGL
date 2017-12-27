@@ -101,7 +101,6 @@ public abstract class GameApplication extends Application {
     {
         return new GameWorld();
     }
-
     MainWindow getMainWindow() {
         return mainWindow;
     }
