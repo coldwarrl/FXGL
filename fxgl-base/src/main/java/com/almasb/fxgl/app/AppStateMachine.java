@@ -61,7 +61,7 @@ public final class AppStateMachine {
 
     public void removeListener(StateChangeListener listener) {
         listeners.removeValueByIdentity(listener);
-    }
+       }
 
     /**
      * Can only be called when no substates are present.

@@ -195,6 +195,7 @@ internal constructor(private val app: GameApplication, scene: FXGLScene) : AppSt
  * The state in which the player will spend most of the time.
  */
 internal class PlayState
+(sceneFactory: SceneFactory, app: GameApplication) : AppState(sceneFactory.newGameScene()) {
 internal constructor(scene: FXGLScene) : AppState(scene) {
 
     val gameState: GameState
@@ -206,10 +207,9 @@ internal constructor(scene: FXGLScene) : AppState(scene) {
 
     init {
         gameState = GameState()
-        gameWorld = GameWorld()
-        physicsWorld = PhysicsWorld(FXGL.getAppHeight(), FXGL.getProperties().getDouble("physics.ppm"))
-
+        gameWorld = app.createGameWorld()
         gameWorld.addWorldListener(physicsWorld)
+
         gameWorld.addWorldListener(gameScene)
 
         if (FXGL.getSettings().isMenuEnabled) {
