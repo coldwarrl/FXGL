@@ -49,11 +49,7 @@ import javafx.geometry.Rectangle2D;
 import javafx.scene.control.Menu;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
-import kotlin.reflect.KClass;
-import org.jetbrains.annotations.NotNull;
-import tornadofx.App;
 import tornadofx.FX;
-import tornadofx.UIComponent;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -99,15 +95,26 @@ public abstract class GameApplication extends Application {
     private ReadOnlyGameSettings settings;
     private AppStateMachine stateMachine;
 
+    public GameWorld getInjectableGameWorld() {
+        return injectableGameWorld;
+    }
+
+    public void setInjectableGameWorld(GameWorld injectableGameWorld) {
+        this.injectableGameWorld = injectableGameWorld;
+    }
+
+    private GameWorld injectableGameWorld; //used in mocking
+
 
     /**
      * May be overridden for custom game world
+     *
      * @return
      */
-    public GameWorld createGameWorld()
-    {
+    public GameWorld createGameWorld() {
         return new GameWorld();
     }
+
     MainWindow getMainWindow() {
         return mainWindow;
     }
@@ -579,10 +586,12 @@ public abstract class GameApplication extends Application {
     /* CALLBACKS BEGIN */
 
     @Override
-    public final void init() {}
+    public final void init() {
+    }
 
     @Override
-    public final void stop() {}
+    public final void stop() {
+    }
 
     /**
      * Initialize app settings.
@@ -604,43 +613,50 @@ public abstract class GameApplication extends Application {
      * }, KeyCode.A);
      * </pre>
      */
-    protected void initInput() {}
+    protected void initInput() {
+    }
 
     /**
      * This is called after core services are initialized
      * but before any game init.
      * Called only once per application lifetime.
      */
-    protected void preInit() {}
+    protected void preInit() {
+    }
 
     /**
      * Can be overridden to provide global variables.
      *
      * @param vars map containing CVars (global variables)
      */
-    protected void initGameVars(Map<String, Object> vars) {}
+    protected void initGameVars(Map<String, Object> vars) {
+    }
 
     /**
      * Initialize game objects.
      */
-    protected void initGame() {}
+    protected void initGame() {
+    }
 
     /**
      * Initialize collision handlers, physics properties.
      */
-    protected void initPhysics() {}
+    protected void initPhysics() {
+    }
 
     /**
      * Initialize UI objects.
      */
-    protected void initUI() {}
+    protected void initUI() {
+    }
 
     /**
      * Called every frame _only_ in Play state.
      *
      * @param tpf time per frame
      */
-    protected void onUpdate(double tpf) {}
+    protected void onUpdate(double tpf) {
+    }
 
     /**
      * Called after main loop tick has been completed in Play state.
@@ -650,7 +666,8 @@ public abstract class GameApplication extends Application {
      *
      * @param tpf time per frame (same as main update tpf)
      */
-    protected void onPostUpdate(double tpf) {}
+    protected void onPostUpdate(double tpf) {
+    }
 
     /**
      * Called when MenuEvent.SAVE occurs.
@@ -683,7 +700,7 @@ public abstract class GameApplication extends Application {
      *
      * @param settings mock settings
      */
-    void injectSettings(ReadOnlyGameSettings settings) {
+    public void injectSettings(ReadOnlyGameSettings settings) {
         this.settings = settings;
     }
 
@@ -705,7 +722,7 @@ public abstract class GameApplication extends Application {
     }
 
     public final GameWorld getGameWorld() {
-        return playState.getGameWorld();
+        return injectableGameWorld != null ? injectableGameWorld : playState.getGameWorld();
     }
 
     public final PhysicsWorld getPhysicsWorld() {
