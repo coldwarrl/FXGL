@@ -88,15 +88,6 @@ public abstract class GameApplication extends Application {
     private ReadOnlyGameSettings settings;
     private AppStateMachine stateMachine;
 
-
-    /**
-     * May be overridden for custom game world
-     * @return
-     */
-    public GameWorld createGameWorld()
-    {
-        return new GameWorld();
-    }
     public GameWorld getInjectableGameWorld() {
         return injectableGameWorld;
     }
@@ -106,6 +97,16 @@ public abstract class GameApplication extends Application {
     }
 
     private GameWorld injectableGameWorld; //used in mocking
+
+
+    /**
+     * May be overridden for custom game world
+     *
+     * @return
+     */
+    public GameWorld createGameWorld() {
+        return new GameWorld();
+    }
 
 
     MainWindow getMainWindow() {
