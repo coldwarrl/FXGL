@@ -92,6 +92,16 @@ public abstract class GameApplication extends Application {
     private ReadOnlyGameSettings settings;
     private AppStateMachine stateMachine;
 
+    public GameWorld getInjectableGameWorld() {
+        return injectableGameWorld;
+    }
+
+    public void setInjectableGameWorld(GameWorld injectableGameWorld) {
+        this.injectableGameWorld = injectableGameWorld;
+    }
+
+    private GameWorld injectableGameWorld; //used in mocking
+
 
 
     }
