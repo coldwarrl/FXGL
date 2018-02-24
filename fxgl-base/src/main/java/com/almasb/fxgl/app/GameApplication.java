@@ -49,15 +49,6 @@ import javafx.geometry.Rectangle2D;
 import javafx.scene.control.Menu;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
-import kotlin.reflect.KClass;
-import org.jetbrains.annotations.NotNull;
-import tornadofx.App;
-import tornadofx.FX;
-import tornadofx.UIComponent;
-import tornadofx.FX;
-import tornadofx.UIComponent;
-import tornadofx.FX;
-import tornadofx.UIComponent;
 import tornadofx.FX;
 import tornadofx.UIComponent;
 import tornadofx.FX;
@@ -106,6 +97,11 @@ public abstract class GameApplication extends Application {
     private ReadOnlyGameSettings settings;
     private AppStateMachine stateMachine;
 
+
+    private GameWorld injectableGameWorld; //used in mocking
+
+
+
     public GameWorld getInjectableGameWorld() {
         return injectableGameWorld;
     }
@@ -114,7 +110,6 @@ public abstract class GameApplication extends Application {
         this.injectableGameWorld = injectableGameWorld;
     }
 
-    private GameWorld injectableGameWorld; //used in mocking
 
 
 
