@@ -239,9 +239,7 @@ public abstract class GameApplication extends Application {
 
     private void handleFatalErrorBeforeLaunch(Throwable error) {
         if (Logger.isConfigured()) {
-            log.fatal("Exception during FXGL configuration:");
-            log.fatal(Logger.errorTraceAsString(error));
-            log.fatal("FXGL will now exit");
+            log.fatal("Exception during FXGL configuration:", error);
 
             Logger.close();
         } else {
@@ -275,10 +273,7 @@ public abstract class GameApplication extends Application {
 
         handledOnce = true;
 
-        log.fatal("Uncaught Exception:");
-        log.fatal(Logger.errorTraceAsString(error));
-        log.fatal("Application will now exit");
-
+        log.fatal("Uncaught Exception:", error);
         // stop main loop from running as we cannot continue
         stopMainLoop();
 
