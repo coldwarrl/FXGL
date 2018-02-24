@@ -132,6 +132,9 @@ public abstract class GameApplication extends Application {
             FX.registerApplication(this, stage);
 
 
+            FX.registerApplication(this, stage);
+
+
             log.debug("Starting FXGL");
 
             new Thread(new FXGLStartTask(), "FXGL Launcher Thread").start();
@@ -601,7 +604,8 @@ public abstract class GameApplication extends Application {
      * Initialize game assets, such as Texture, Sound, Music, etc.
      */
     @Deprecated
-    protected void initAssets() {}
+    protected void initAssets() {
+    }
 
     /**
      * Can be overridden to provide global variables.

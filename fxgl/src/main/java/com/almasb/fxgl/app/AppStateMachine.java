@@ -60,8 +60,15 @@ public final class AppStateMachine {
         listeners.add(listener);
     }
 
-    public void removeListener(StateChangeListener listener) {
-        listeners.removeValueByIdentity(listener);
+        loading = new LoadingState(app, sceneFactory);
+        play = new PlayState(sceneFactory, app);
+
+        // reasonable hack to trigger dialog state init before intro and menus
+        DialogSubState.INSTANCE.getView();
+
+        intro = app.getSettings().isIntroEnabled() ? new IntroState(app, sceneFactory) : null;
+        mainMenu = app.getSettings().isMenuEnabled() ? new MainMenuState(sceneFactory) : null;
+        gameMenu = app.getSettings().isMenuEnabled() ? new GameMenuState(sceneFactory) : null;
     }
 
     /**
