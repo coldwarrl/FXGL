@@ -47,8 +47,6 @@ import javafx.scene.control.Menu;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import tornadofx.FX;
-import tornadofx.UIComponent;
-import tornadofx.FX;
 
 import java.util.*;
 
@@ -90,13 +88,6 @@ public abstract class GameApplication extends Application {
     private ReadOnlyGameSettings settings;
     private AppStateMachine stateMachine;
 
-    public GameWorld getInjectableGameWorld() {
-        return injectableGameWorld;
-    }
-
-    public void setInjectableGameWorld(GameWorld injectableGameWorld) {
-        this.injectableGameWorld = injectableGameWorld;
-    }
 
     private GameWorld injectableGameWorld; //used in mocking
 
@@ -110,7 +101,6 @@ public abstract class GameApplication extends Application {
         this.injectableGameWorld = injectableGameWorld;
     }
 
-    private GameWorld injectableGameWorld; //used in mocking
 
 
     /**
@@ -305,7 +295,7 @@ public abstract class GameApplication extends Application {
         AppState initial = new StartupState(this);
 
         AppState loading = new LoadingState(this, sceneFactory);
-        AppState play = new PlayState(sceneFactory);
+        AppState play = new PlayState(sceneFactory, this);
 
         // reasonable hack to trigger dialog state init before intro and menus
         DialogSubState.INSTANCE.getView();
