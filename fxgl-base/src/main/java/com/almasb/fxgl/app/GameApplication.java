@@ -50,8 +50,6 @@ import javafx.scene.control.Menu;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import tornadofx.FX;
-import tornadofx.UIComponent;
-import tornadofx.FX;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -97,13 +95,6 @@ public abstract class GameApplication extends Application {
     private ReadOnlyGameSettings settings;
     private AppStateMachine stateMachine;
 
-    public GameWorld getInjectableGameWorld() {
-        return injectableGameWorld;
-    }
-
-    public void setInjectableGameWorld(GameWorld injectableGameWorld) {
-        this.injectableGameWorld = injectableGameWorld;
-    }
 
     private GameWorld injectableGameWorld; //used in mocking
 
@@ -117,7 +108,6 @@ public abstract class GameApplication extends Application {
         this.injectableGameWorld = injectableGameWorld;
     }
 
-    private GameWorld injectableGameWorld; //used in mocking
 
 
     /**
