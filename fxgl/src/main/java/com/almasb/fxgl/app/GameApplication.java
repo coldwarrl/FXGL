@@ -112,7 +112,6 @@ public abstract class GameApplication extends Application {
         return new GameWorld();
     }
 
-
     MainWindow getMainWindow() {
         return mainWindow;
     }
@@ -238,7 +237,6 @@ public abstract class GameApplication extends Application {
     private void handleFatalErrorBeforeLaunch(Throwable error) {
         if (Logger.isConfigured()) {
             log.fatal("Exception during FXGL configuration:", error);
-            log.fatal("FXGL will now exit");
 
             Logger.close();
         } else {
@@ -273,8 +271,6 @@ public abstract class GameApplication extends Application {
         handledOnce = true;
 
         log.fatal("Uncaught Exception:", error);
-        log.fatal("Application will now exit");
-
         // stop main loop from running as we cannot continue
         stopMainLoop();
 
@@ -600,7 +596,8 @@ public abstract class GameApplication extends Application {
      * Initialize game assets, such as Texture, Sound, Music, etc.
      */
     @Deprecated
-    protected void initAssets() {}
+    protected void initAssets() {
+    }
 
     /**
      * Can be overridden to provide global variables.
