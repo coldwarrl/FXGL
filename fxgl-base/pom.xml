@@ -21,6 +21,12 @@
         </dependency>
 
         <dependency>
+            <groupId>org.jfxtras</groupId>
+            <artifactId>jfxtras-window</artifactId>
+            <version>${jfxtras.version}</version>
+        </dependency>
+
+        <dependency>
             <groupId>org.jetbrains.kotlinx</groupId>
             <artifactId>kotlinx-coroutines-core</artifactId>
             <version>${kotlinx.version}</version>

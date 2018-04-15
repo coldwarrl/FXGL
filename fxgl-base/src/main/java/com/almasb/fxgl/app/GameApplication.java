@@ -286,7 +286,7 @@ public abstract class GameApplication extends Application {
         AppState initial = new StartupState(this, sceneFactory.newStartup());
 
         AppState loading = new LoadingState(this, sceneFactory.newLoadingScene());
-        AppState play = new PlayState(sceneFactory.newGameScene(getWidth(), getHeight()));
+        AppState play = new PlayState(sceneFactory.newGameScene(getWidth(), getHeight()), this);
 
         // reasonable hack to trigger dialog state init before intro and menus
         DialogSubState.INSTANCE.getView();

@@ -31,7 +31,7 @@ import javafx.geometry.Rectangle2D
  *
  * @author Almas Baimagambetov (AlmasB) (almaslvl@gmail.com)
  */
-class GameWorld {
+open class GameWorld {
 
     companion object {
         private const val INITIAL_CAPACITY = 32

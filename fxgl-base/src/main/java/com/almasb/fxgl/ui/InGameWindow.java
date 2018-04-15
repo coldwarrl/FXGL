@@ -11,6 +11,9 @@ import javafx.beans.value.ChangeListener;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
 import javafx.scene.paint.Paint;
+import jfxtras.scene.control.window.CloseIcon;
+import jfxtras.scene.control.window.MinimizeIcon;
+import jfxtras.scene.control.window.Window;
 
 import java.util.concurrent.CopyOnWriteArrayList;
 
@@ -28,7 +31,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
  *
  * @author Almas Baimagambetov (AlmasB) (almaslvl@gmail.com)
  */
-public class InGameWindow extends MDIWindow {
+public class InGameWindow extends Window {
 
     private static final int SNAP_SIZE = 10;
 
@@ -44,6 +47,7 @@ public class InGameWindow extends MDIWindow {
      */
     public InGameWindow(String title) {
         this(title, WindowDecor.ALL);
+
     }
 
     /**
@@ -53,20 +57,16 @@ public class InGameWindow extends MDIWindow {
      * @param decor window decor
      */
     public InGameWindow(String title, WindowDecor decor) {
-        super();
-
+        super(title);
         switch (decor) {
             case MINIMIZE:
-                setCanMinimize(true);
-                setCanClose(false);
+                getRightIcons().addAll(new MinimizeIcon(this));
                 break;
             case CLOSE:
-                setCanMinimize(false);
-                setCanClose(true);
+                getRightIcons().addAll(new CloseIcon(this));
                 break;
             case ALL:
-                setCanMinimize(true);
-                setCanClose(true);
+                getRightIcons().addAll(new MinimizeIcon(this), new CloseIcon(this));
                 break;
             case NONE:  // fallthru
             default:    // do nothing
@@ -80,8 +80,6 @@ public class InGameWindow extends MDIWindow {
         layoutYProperty().addListener(makeListenerY());
 
         windows.add(this);
-
-        setTitle(title);
     }
 
     private ChangeListener<Number> makeListenerX() {
@@ -259,9 +257,9 @@ public class InGameWindow extends MDIWindow {
         return value > min && value < max;
     }
 
-    //@Override
+    @Override
     public void close() {
-        //super.close();
+        super.close();
         windows.remove(this);
     }
 

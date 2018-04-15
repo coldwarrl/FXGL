@@ -74,6 +74,7 @@
 
         <!-- dependencies -->
         <kotlin.version>1.2.30</kotlin.version>
+        <jfxtras.version>8.0-r5</jfxtras.version>
         <kotlinx.version>0.22.3</kotlinx.version>
         <jackson.version>2.9.0</jackson.version>
         <apache.http.version>4.5.3</apache.http.version>
