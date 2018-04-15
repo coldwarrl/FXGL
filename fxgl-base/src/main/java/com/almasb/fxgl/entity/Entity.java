@@ -39,7 +39,7 @@ import static com.almasb.fxgl.util.BackportKt.forEach;
  *     <li>Add component</li>
  *     <li>Remove component</li>
  * </ul>
- *
+ * <p>
  * Entity is guaranteed to have Type, Position, Rotation, BBox, View components.
  * The best practice is to add all components to an entity before attaching
  * the entity to the world and pause the components.
@@ -75,8 +75,6 @@ public class Entity {
 
     private Entity parent = null;
     private String modelId = "";
-    private String id = "";
-    private String name = "";
 
     public Entity() {
         addComponent(type);
@@ -294,7 +292,7 @@ public class Entity {
     /**
      * Instantly moves this entity distance units towards given point.
      *
-     * @param point the point to move towards
+     * @param point    the point to move towards
      * @param distance the distance to move
      */
     public final void translateTowards(Point2D point, double distance) {
@@ -333,7 +331,7 @@ public class Entity {
     /**
      * Rotate entity view by given angle clockwise.
      * To rotate counter clockwise use a negative angle value.
-     *
+     * <p>
      * Note: this doesn't affect hit boxes. For more accurate
      * collisions use {@link com.almasb.fxgl.physics.PhysicsComponent}.
      *
@@ -556,7 +554,7 @@ public class Entity {
     }
 
     /**
-     * @param key property key
+     * @param key   property key
      * @param value property value
      */
     public final void setProperty(String key, Object value) {
@@ -635,7 +633,7 @@ public class Entity {
      *
      * @param component the component
      * @throws IllegalArgumentException if a component with same type already registered or anonymous
-     * @throws IllegalStateException if components required by the given component are missing
+     * @throws IllegalStateException    if components required by the given component are missing
      */
     public final void addComponent(Component component) {
         checkNotUpdating();
@@ -657,6 +655,7 @@ public class Entity {
      * @param type type of the component to remove
      * @throws IllegalArgumentException if the component is required by other components
      * @return true if removed, false if not found
+     * @throws IllegalArgumentException if the component is required by other components / controls
      */
     public final boolean removeComponent(Class<? extends Component> type) {
         checkNotUpdating();
@@ -859,112 +858,12 @@ public class Entity {
         return "Entity(" + "components=" + components + ")";
     }
 
-    public String getId() {
-        return id;
+    public int getId() {
+        return getComponent(IDComponent.class).getID();
     }
 
     public String getName() {
-        return name;
-    }
-
-    public Entity getParent() {
-        return parent;
-    }
-
-    public void setParent(Entity parent) {
-        this.parent = parent;
-    }
-
-    public String getModelId() {
-        return modelId;
-    }
-
-    public String getId() {
-        return id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public Entity getParent() {
-        return parent;
-    }
-
-    public void setParent(Entity parent) {
-        this.parent = parent;
-    }
-
-    public String getModelId() {
-        return modelId;
-    }
-
-    public String getId() {
-        return id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public Entity getParent() {
-        return parent;
-    }
-
-    public void setParent(Entity parent) {
-        this.parent = parent;
-    }
-
-    public String getModelId() {
-        return modelId;
-    }
-
-    public String getId() {
-        return id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public Entity getParent() {
-        return parent;
-    }
-
-    public void setParent(Entity parent) {
-        this.parent = parent;
-    }
-
-    public String getModelId() {
-        return modelId;
-    }
-
-    public String getId() {
-        return id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public Entity getParent() {
-        return parent;
-    }
-
-    public void setParent(Entity parent) {
-        this.parent = parent;
-    }
-
-    public String getModelId() {
-        return modelId;
-    }
-
-    public String getId() {
-        return id;
-    }
-
-    public String getName() {
-        return name;
+        return getComponent(IDComponent.class).getName();
     }
 
     public Entity getParent() {

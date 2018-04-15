@@ -111,88 +111,6 @@ public abstract class GameApplication extends Application {
     }
 
 
-
-
-    }
-    public GameWorld getInjectableGameWorld() {
-        return injectableGameWorld;
-    }
-
-    public void setInjectableGameWorld(GameWorld injectableGameWorld) {
-        this.injectableGameWorld = injectableGameWorld;
-    }
-
-    private GameWorld injectableGameWorld; //used in mocking
-
-
-
-    public GameWorld getInjectableGameWorld() {
-        return injectableGameWorld;
-    }
-
-    public void setInjectableGameWorld(GameWorld injectableGameWorld) {
-        this.injectableGameWorld = injectableGameWorld;
-    }
-
-    private GameWorld injectableGameWorld; //used in mocking
-
-
-
-    public GameWorld getInjectableGameWorld() {
-        return injectableGameWorld;
-    }
-
-    public void setInjectableGameWorld(GameWorld injectableGameWorld) {
-        this.injectableGameWorld = injectableGameWorld;
-    }
-
-    private GameWorld injectableGameWorld; //used in mocking
-
-
-
-    }
-    public GameWorld getInjectableGameWorld() {
-        return injectableGameWorld;
-    }
-
-    public void setInjectableGameWorld(GameWorld injectableGameWorld) {
-        this.injectableGameWorld = injectableGameWorld;
-    }
-
-    private GameWorld injectableGameWorld; //used in mocking
-
-
-    private GameWorld injectableGameWorld; //used in mocking
-
-
-
-    public GameWorld getInjectableGameWorld() {
-        return injectableGameWorld;
-    }
-
-    public void setInjectableGameWorld(GameWorld injectableGameWorld) {
-        this.injectableGameWorld = injectableGameWorld;
-    }
-
-
-    /**
-     * May be overridden for custom game world
-     * @return
-     */
-    public GameWorld createGameWorld()
-    {
-        return new GameWorld();
-    }
-
-    /**
-     * May be overridden for custom game world
-     *
-     * @return
-     */
-    public GameWorld createGameWorld() {
-        return new GameWorld();
-    }
-
     MainWindow getMainWindow() {
         return mainWindow;
     }
@@ -221,16 +139,6 @@ public abstract class GameApplication extends Application {
             initLogger();
 
             initMainWindow(stage);
-
-            showPreloadingStage();
-            startFXGL();
-
-            FX.registerApplication(this, stage);
-
-            FX.registerApplication(this, stage);
-
-
-            FX.registerApplication(this, stage);
 
             log.debug("Starting FXGL");
 
