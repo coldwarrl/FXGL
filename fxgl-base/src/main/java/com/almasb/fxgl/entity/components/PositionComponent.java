@@ -17,6 +17,8 @@ import javafx.beans.property.SimpleDoubleProperty;
 import javafx.geometry.Point2D;
 import org.jetbrains.annotations.NotNull;
 
+import java.io.IOException;
+
 /**
  * Component that adds a 2d position to an entity.
  *
@@ -26,8 +28,8 @@ import org.jetbrains.annotations.NotNull;
 public class PositionComponent extends Component
         implements SerializableComponent, CopyableComponent<PositionComponent> {
 
-    private final DoubleProperty x;
-    private final DoubleProperty y;
+    transient private DoubleProperty x;
+    transient private DoubleProperty y;
 
     /**
      * Constructs a position component from given x and y.
@@ -229,6 +231,22 @@ public class PositionComponent extends Component
     @Override
     public void read(@NotNull Bundle bundle) {
         setValue(bundle.get("x"), bundle.get("y"));
+    }
+
+    private void writeObject(java.io.ObjectOutputStream stream)
+            throws IOException {
+        stream.writeDouble(x.doubleValue());
+        stream.writeDouble(y.doubleValue());
+    }
+
+    private void readObject(java.io.ObjectInputStream stream)
+            throws IOException, ClassNotFoundException {
+
+        x = new SimpleDoubleProperty();
+        y = new SimpleDoubleProperty();
+
+        x.set(stream.readDouble());
+        y.set(stream.readDouble());
     }
 
     @Override

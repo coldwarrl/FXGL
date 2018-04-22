@@ -7,13 +7,18 @@
 package com.almasb.fxgl.entity.components;
 
 import com.almasb.fxgl.entity.component.Component;
+import com.almasb.fxgl.entity.component.SerializableComponent;
+import com.almasb.fxgl.io.serialization.Bundle;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
+import org.jetbrains.annotations.NotNull;
+
+import java.io.IOException;
 
 /**
  * @author Almas Baimagambetov (AlmasB) (almaslvl@gmail.com)
  */
-public abstract class ObjectComponent<T> extends Component {
+public abstract class ObjectComponent<T> extends Component implements SerializableComponent {
     private ObjectProperty<T> property;
 
     /**
@@ -47,6 +52,27 @@ public abstract class ObjectComponent<T> extends Component {
      */
     public final void setValue(T value) {
         property.set(value);
+    }
+
+    private void writeObject(java.io.ObjectOutputStream stream)
+            throws IOException {
+        stream.writeObject(getValue());
+    }
+
+    private void readObject(java.io.ObjectInputStream stream)
+            throws IOException, ClassNotFoundException {
+        property = new SimpleObjectProperty<>();
+        setValue((T) stream.readObject());
+    }
+
+    @Override
+    public void write(@NotNull Bundle bundle) {
+
+    }
+
+    @Override
+    public void read(@NotNull Bundle bundle) {
+
     }
 
     @Override

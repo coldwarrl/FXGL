@@ -7,6 +7,8 @@ package com.almasb.fxgl.physics;
 
 import com.almasb.fxgl.core.pool.Poolable;
 
+import java.io.Serializable;
+
 /**
  * Data structure for holding info about collision result.
  * {@link CollisionResult#hasCollided()} will return true

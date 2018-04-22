@@ -33,7 +33,7 @@ import java.util.ArrayList;
 @CoreComponent
 @Required(PositionComponent.class)
 public class BoundingBoxComponent extends Component
-        implements SerializableComponent, CopyableComponent<BoundingBoxComponent> {
+        implements CopyableComponent<BoundingBoxComponent> {
 
     static {
         Pools.set(CollisionResult.class, new Pool<CollisionResult>() {
@@ -517,15 +517,6 @@ public class BoundingBoxComponent extends Component
         return new Rectangle2D(minX, minY, maxX - minX, maxY - minY);
     }
 
-    @Override
-    public void write(@NotNull Bundle bundle) {
-        bundle.put("hitBoxes", new ArrayList<>(hitBoxes));
-    }
-
-    @Override
-    public void read(@NotNull Bundle bundle) {
-        hitBoxes.addAll(bundle.<ArrayList<HitBox>>get("hitBoxes"));
-    }
 
     @Override
     public BoundingBoxComponent copy() {

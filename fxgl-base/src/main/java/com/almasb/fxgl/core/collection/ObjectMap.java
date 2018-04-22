@@ -13,6 +13,7 @@ package com.almasb.fxgl.core.collection;
 import com.almasb.fxgl.core.math.FXGLMath;
 import com.almasb.fxgl.util.BackportKt;
 
+import java.io.Serializable;
 import java.util.*;
 
 /**
@@ -25,7 +26,7 @@ import java.util.*;
  *
  * @author Nathan Sweet
  */
-public class ObjectMap<K, V> implements Iterable<ObjectMap.Entry<K, V>> {
+public class ObjectMap<K, V> implements Iterable<ObjectMap.Entry<K, V>>, Serializable {
     private static final int PRIME1 = 0xbe1f14b1;
     private static final int PRIME2 = 0xb4b82e39;
     private static final int PRIME3 = 0xced1c241;

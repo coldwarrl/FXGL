@@ -284,26 +284,4 @@ public class BoundingBoxComponentTest {
         assertThat(range.getMaxY(), is(15.0 + 60 + 10));
     }
 
-    @Test
-    public void testSerialization() {
-        bbox.addHitBox(new HitBox("BOX", BoundingShape.box(30, 40)));
-
-        // write
-        Bundle bundle = new Bundle("BBOXTest");
-        bbox.write(bundle);
-
-        // read
-        BoundingBoxComponent bbox2 = new BoundingBoxComponent();
-        bbox2.read(bundle);
-
-        assertThat(bbox2.getWidth(), is(30.0));
-        assertThat(bbox2.getHeight(), is(40.0));
-
-        List<HitBox> boxes = bbox2.hitBoxesProperty();
-
-        assertThat(boxes.size(), is(1));
-        assertThat(boxes.get(0).getName(), is("BOX"));
-        assertThat(boxes.get(0).getWidth(), is(30.0));
-        assertThat(boxes.get(0).getHeight(), is(40.0));
-    }
 }

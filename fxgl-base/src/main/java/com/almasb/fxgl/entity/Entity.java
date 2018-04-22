@@ -23,21 +23,24 @@ import javafx.geometry.Point2D;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.Node;
 
+import java.io.IOException;
 import java.io.Serializable;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static com.almasb.fxgl.util.BackportKt.forEach;
 
 /**
  * A generic game object.
  * Behavior and data are added via components.
- *
+ * <p>
  * During update (or component update) it is not allowed to:
  * <ul>
- *     <li>Add component</li>
- *     <li>Remove component</li>
+ * <li>Add component</li>
+ * <li>Remove component</li>
  * </ul>
  * <p>
  * Entity is guaranteed to have Type, Position, Rotation, BBox, View components.
@@ -47,11 +50,11 @@ import static com.almasb.fxgl.util.BackportKt.forEach;
  *
  * @author Almas Baimagambetov (AlmasB) (almaslvl@gmail.com)
  */
-public class Entity {
+public class Entity implements Serializable {
 
-    private PropertyMap properties = new PropertyMap();
+    transient private PropertyMap properties = new PropertyMap();
 
-    private ObjectMap<Class<? extends Component>, Component> components = new ObjectMap<>();
+    transient private ObjectMap<Class<? extends Component>, Component> components = new ObjectMap<>();
 
     private List<ComponentListener> componentListeners = new ArrayList<>();
 
@@ -59,7 +62,7 @@ public class Entity {
 
     private GameWorld world = null;
 
-    private ReadOnlyBooleanWrapper active = new ReadOnlyBooleanWrapper(false);
+    transient private ReadOnlyBooleanWrapper active = new ReadOnlyBooleanWrapper(false);
 
     private Runnable onActive = null;
     private Runnable onNotActive = null;
@@ -70,8 +73,8 @@ public class Entity {
     private TypeComponent type = new TypeComponent();
     private PositionComponent position = new PositionComponent();
     private RotationComponent rotation = new RotationComponent();
-    private BoundingBoxComponent bbox = new BoundingBoxComponent();
-    private ViewComponent view = new ViewComponent();
+    transient private BoundingBoxComponent bbox = new BoundingBoxComponent();
+    transient private ViewComponent view = new ViewComponent();
 
     private Entity parent = null;
     private String modelId = "";
@@ -106,7 +109,7 @@ public class Entity {
     /**
      * Removes all components.
      * Resets entity to its "new" state.
-     *
+     * <p>
      * https://github.com/AlmasB/FXGL/issues/528
      */
     void clean() {
@@ -653,8 +656,8 @@ public class Entity {
      * Core components (type, position, rotation, bbox, view) cannot be removed.
      *
      * @param type type of the component to remove
-     * @throws IllegalArgumentException if the component is required by other components
      * @return true if removed, false if not found
+     * @throws IllegalArgumentException if the component is required by other components
      * @throws IllegalArgumentException if the component is required by other components / controls
      */
     public final boolean removeComponent(Class<? extends Component> type) {
@@ -852,6 +855,19 @@ public class Entity {
     public void load(Bundle bundle) {
         EntitySerializer.INSTANCE.load(this, bundle);
     }
+
+    private void writeObject(java.io.ObjectOutputStream stream)
+            throws IOException {
+        stream.writeObject(components.values().toList().stream().filter(c -> c instanceof SerializableComponent)
+        .collect(Collectors.toList()));
+    }
+
+    private void readObject(java.io.ObjectInputStream stream) throws IOException, ClassNotFoundException {
+        components = new ObjectMap<>();
+        List<Component> componentsStream = (List<Component>) stream.readObject();
+        componentsStream.forEach(c-> components.put(c.getClass(), c));
+    }
+
 
     @Override
     public String toString() {

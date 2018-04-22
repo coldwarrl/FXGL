@@ -6,6 +6,7 @@
 
 package com.almasb.fxgl.entity.component;
 
+import com.almasb.fxgl.io.serialization.JavaSerializableType;
 import com.almasb.fxgl.io.serialization.SerializableType;
 
 /**
@@ -13,5 +14,5 @@ import com.almasb.fxgl.io.serialization.SerializableType;
  *
  * @author Almas Baimagambetov (almaslvl@gmail.com)
  */
-public interface SerializableComponent extends SerializableType {
+public interface SerializableComponent extends JavaSerializableType, SerializableType {
 }

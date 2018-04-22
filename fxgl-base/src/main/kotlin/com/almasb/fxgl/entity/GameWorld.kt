@@ -24,6 +24,7 @@ import javafx.beans.property.ObjectProperty
 import javafx.beans.property.SimpleObjectProperty
 import javafx.geometry.Point2D
 import javafx.geometry.Rectangle2D
+import java.io.Serializable
 
 /**
  * Represents pure logical state of the game.
@@ -31,7 +32,7 @@ import javafx.geometry.Rectangle2D
  *
  * @author Almas Baimagambetov (AlmasB) (almaslvl@gmail.com)
  */
-open class GameWorld {
+open class GameWorld: Serializable {
 
     companion object {
         private const val INITIAL_CAPACITY = 32

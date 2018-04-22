@@ -9,8 +9,11 @@ package com.almasb.fxgl.entity.components;
 import com.almasb.fxgl.devtools.DeveloperEditable;
 import com.almasb.fxgl.entity.component.CopyableComponent;
 import com.almasb.fxgl.entity.component.CoreComponent;
+import com.almasb.fxgl.entity.component.SerializableComponent;
 import javafx.beans.property.DoubleProperty;
 import javafx.geometry.Point2D;
+
+import java.io.IOException;
 
 /**
  * Adds rotation data to an entity.
@@ -76,4 +79,5 @@ public class RotationComponent extends DoubleComponent implements CopyableCompon
     public RotationComponent copy() {
         return new RotationComponent(getValue());
     }
+
 }

@@ -13,9 +13,11 @@ import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
 import org.jetbrains.annotations.NotNull;
 
+import java.io.IOException;
+
 /**
  * Represents a double value based component.
- * <p>
+ *
  * <pre>
  * Example:
  *
@@ -85,6 +87,18 @@ public abstract class DoubleComponent extends Component implements SerializableC
     @Override
     public void read(@NotNull Bundle bundle) {
         setValue(bundle.get("value"));
+    }
+
+    private void writeObject(java.io.ObjectOutputStream stream)
+            throws IOException {
+        stream.writeDouble(getValue());
+    }
+
+    private void readObject(java.io.ObjectInputStream stream)
+            throws IOException, ClassNotFoundException {
+
+        property = new SimpleDoubleProperty();
+        setValue(stream.readDouble());
     }
 
     @Override
