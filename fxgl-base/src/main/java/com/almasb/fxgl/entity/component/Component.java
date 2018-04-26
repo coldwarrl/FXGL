@@ -17,8 +17,6 @@ public abstract class Component {
 
     private boolean paused = false;
 
-    protected boolean isSerializable = false;
-
     public final Entity getEntity() {
         return entity;
     }
@@ -62,7 +60,4 @@ public abstract class Component {
 
     }
 
-    public boolean isSerializable() {
-        return isSerializable;
-    }
 }
