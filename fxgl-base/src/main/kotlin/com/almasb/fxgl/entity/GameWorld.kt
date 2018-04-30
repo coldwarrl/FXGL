@@ -21,9 +21,11 @@ import com.almasb.fxgl.parser.tiled.TiledMap
 import com.almasb.fxgl.util.Optional
 import com.almasb.fxgl.util.Predicate
 import javafx.beans.property.ObjectProperty
+import javafx.beans.property.SimpleDoubleProperty
 import javafx.beans.property.SimpleObjectProperty
 import javafx.geometry.Point2D
 import javafx.geometry.Rectangle2D
+import java.io.IOException
 import java.io.Serializable
 
 /**
@@ -32,7 +34,10 @@ import java.io.Serializable
  *
  * @author Almas Baimagambetov (AlmasB) (almaslvl@gmail.com)
  */
-open class GameWorld: Serializable {
+open class GameWorld : Serializable {
+
+    @Transient
+    var reloaded = false
 
     companion object {
         private const val INITIAL_CAPACITY = 32
@@ -40,19 +45,21 @@ open class GameWorld: Serializable {
         private val log = Logger.get("GameWorld")
     }
 
-    private val updateList = Array<Entity>(INITIAL_CAPACITY)
+    @Transient
+    private var updateList = Array<Entity>(INITIAL_CAPACITY)
 
     /**
      * List of entities added to the update list in the next tick.
      */
-    private val waitingList = UnorderedArray<Entity>(INITIAL_CAPACITY)
+    @Transient
+    private var waitingList = UnorderedArray<Entity>(INITIAL_CAPACITY)
 
     /**
      * List of entities in the world.
      *
      * @return direct list of entities in the world (do NOT modify)
      */
-    val entities = ArrayList<Entity>(INITIAL_CAPACITY)
+    var entities = ArrayList<Entity>(INITIAL_CAPACITY)
 
     /**
      * @return shallow copy of the entities list (new list)
@@ -195,7 +202,8 @@ open class GameWorld: Serializable {
         entitySpawners.clear()
     }
 
-    private val worldListeners = Array<EntityWorldListener>()
+    @Transient
+    private var worldListeners = Array<EntityWorldListener>()
 
     fun addWorldListener(listener: EntityWorldListener) {
         worldListeners.add(listener)
@@ -217,7 +225,8 @@ open class GameWorld: Serializable {
         }
     }
 
-    private val selectedEntity = SimpleObjectProperty<Entity>()
+    @Transient
+    private var selectedEntity = SimpleObjectProperty<Entity>()
 
     /**
      * @return last selected (clicked on by mouse) entity
@@ -708,4 +717,24 @@ open class GameWorld: Serializable {
 
         return Optional.empty()
     }
+
+
+    @Throws(IOException::class)
+    private fun writeObject(stream: java.io.ObjectOutputStream) {
+        stream.defaultWriteObject()
+        stream.writeObject(selectedEntity.get())
+    }
+
+    @Throws(IOException::class, ClassNotFoundException::class)
+    private fun readObject(stream: java.io.ObjectInputStream) {
+        stream.defaultReadObject()
+
+        worldListeners = Array()
+        updateList = Array()
+        waitingList = UnorderedArray(INITIAL_CAPACITY)
+
+        selectedEntity = SimpleObjectProperty()
+        selectedEntity.set(stream.readObject() as Entity?)
+    }
+
 }

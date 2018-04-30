@@ -6,19 +6,15 @@
 
 package coldwarrl.sandbox
 
+import com.almasb.fxgl.app.FXGL
 import com.almasb.fxgl.app.FXGLMock
 import com.almasb.fxgl.entity.Entities
-import com.almasb.fxgl.entity.EntitiesTest
 import com.almasb.fxgl.entity.Entity
-import com.almasb.fxgl.entity.component.Component
-import com.almasb.fxgl.physics.BoundingShape
-import com.almasb.fxgl.physics.HitBox
-import javafx.geometry.Point2D
-import org.hamcrest.CoreMatchers.`is`
-import org.hamcrest.MatcherAssert.assertThat
+import com.almasb.fxgl.entity.GameWorld
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Test
+import java.io.ByteArrayInputStream
 
 class SerializerTest {
 
@@ -34,18 +30,22 @@ class SerializerTest {
     }
 
     @Test
-    fun `smokeTest`() {
+    fun `smokeTestEntityTest`() {
         val e = Entities.builder()
                 .at(100.0, 100.0)
                 .type(EntityType.TEST1)
                 .build()
 
-        Serializer.serializeToFile(e, "test.bin")
-
-        val e2 = Serializer.deserializeFromFile("test.bin") as Entity
+        val outputStream = Serializer.serializeToMemory(e)
+        val e2 = Serializer.deserializeFromMemory(ByteArrayInputStream(outputStream.toByteArray())) as Entity
 
         Assertions.assertEquals(3, e2.components.size())
+    }
 
+    @Test
+    fun `smokeGameWorldTest`() {
+        val outputStream = Serializer.serializeToMemory(GameWorld())
+        val gameWorld = Serializer.deserializeFromMemory(ByteArrayInputStream(outputStream.toByteArray()))
     }
 
 }

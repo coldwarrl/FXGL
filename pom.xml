@@ -73,7 +73,7 @@
         <build.helper.version>3.0.0</build.helper.version>
 
         <!-- dependencies -->
-        <kotlin.version>1.2.30</kotlin.version>
+        <kotlin.version>1.2.41</kotlin.version>
         <jfxtras.version>8.0-r5</jfxtras.version>
         <kotlinx.version>0.22.3</kotlinx.version>
         <jackson.version>2.9.0</jackson.version>
@@ -108,7 +108,6 @@
             <scope>test</scope>
         </dependency>
     </dependencies>
-
     <build>
         <pluginManagement>
             <plugins>
@@ -260,9 +259,6 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-gpg-plugin</artifactId>
-                <configuration>
-                    <skip>true</skip>
-                </configuration>
                 <version>${maven.gpg.version}</version>
                 <executions>
                     <execution>
@@ -291,11 +287,6 @@
             <plugin>
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>${maven.surefire.version}</version>
-                <configuration>
-                    <forkCount>3</forkCount>
-                    <reuseForks>true</reuseForks>
-                    <argLine>-Xmx1024m -XX:MaxPermSize=256m</argLine>
-                </configuration>
                 <dependencies>
                     <dependency>
                         <groupId>org.junit.platform</groupId>

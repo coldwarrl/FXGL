@@ -858,12 +858,16 @@ public class Entity implements Serializable {
 
     private void writeObject(java.io.ObjectOutputStream stream)
             throws IOException {
+        stream.defaultWriteObject();
+        stream.writeBoolean(active.get());
         stream.writeObject(components.values().toList().stream().filter(c -> c instanceof SerializableComponent)
         .collect(Collectors.toList()));
     }
 
     private void readObject(java.io.ObjectInputStream stream) throws IOException, ClassNotFoundException {
+        stream.defaultReadObject();
         components = new ObjectMap<>();
+        active = new ReadOnlyBooleanWrapper(stream.readBoolean());
         List<Component> componentsStream = (List<Component>) stream.readObject();
         componentsStream.forEach(c-> components.put(c.getClass(), c));
     }

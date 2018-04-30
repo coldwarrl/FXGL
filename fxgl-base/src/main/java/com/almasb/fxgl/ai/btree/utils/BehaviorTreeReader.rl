@@ -95,9 +95,9 @@ public abstract class BehaviorTreeReader {
 		}
 	}
 
-	/** Parses the given input stream.
-	 * @param input the input stream
-	 * @throws RuntimeException if the input stream cannot be successfully parsed. */
+	/** Parses the given input outputStream.
+	 * @param input the input outputStream
+	 * @throws RuntimeException if the input outputStream cannot be successfully parsed. */
 	public void parse (InputStream input) {
 		try {
 			parse(new InputStreamReader(input, "UTF-8"));

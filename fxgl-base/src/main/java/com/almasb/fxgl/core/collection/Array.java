@@ -13,6 +13,7 @@ package com.almasb.fxgl.core.collection;
 import com.almasb.fxgl.core.math.FXGLMath;
 import com.almasb.fxgl.util.Predicate;
 
+import java.io.Serializable;
 import java.util.*;
 
 /**
@@ -22,7 +23,7 @@ import java.util.*;
  *
  * @author Nathan Sweet
  */
-public class Array<T> implements Iterable<T> {
+public class Array<T> implements Iterable<T>, Serializable {
 
     /**
      * Provides direct access to the underlying array.

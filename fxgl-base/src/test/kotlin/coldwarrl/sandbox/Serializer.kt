@@ -2,6 +2,8 @@ package coldwarrl.sandbox
 
 import org.nustaq.serialization.FSTObjectInput
 import org.nustaq.serialization.FSTObjectOutput
+import java.io.ByteArrayInputStream
+import java.io.ByteArrayOutputStream
 import java.io.FileInputStream
 import java.io.FileOutputStream
 
@@ -22,5 +24,23 @@ object Serializer {
 
         return myObject
     }
+
+    fun serializeToMemory(myObject: Any): ByteArrayOutputStream {
+        val byteStream = ByteArrayOutputStream()
+        val out = FSTObjectOutput(byteStream)
+        out.writeObject(myObject, null)
+        out.close()
+
+        return byteStream
+    }
+
+    fun deserializeFromMemory(inputStream: ByteArrayInputStream): Any {
+        val inObject = FSTObjectInput(inputStream)
+        val myObject = inObject.readObject()
+        inObject.close()
+
+        return myObject
+    }
+
 
 }

@@ -83,7 +83,7 @@ import static com.almasb.fxgl.util.BackportKt.forEach;
  * Unless explicitly stated, methods are not thread-safe and must be
  * executed on the JavaFX Application (UI) Thread.
  * By default all callbacks are executed on the JavaFX Application (UI) Thread.
- *
+ * <p>
  * Note: do NOT make any FXGL calls within your APP constructor or to initialize
  * APP fields during declaration, make these calls in initGame().
  *
@@ -97,32 +97,22 @@ public abstract class GameApplication extends Application {
     private ReadOnlyGameSettings settings;
     private AppStateMachine stateMachine;
 
-
-    private GameWorld injectableGameWorld; //used in mocking
-
-
-
-    public GameWorld getInjectableGameWorld() {
-        return injectableGameWorld;
-    }
-
-    public void setInjectableGameWorld(GameWorld injectableGameWorld) {
-        this.injectableGameWorld = injectableGameWorld;
-    }
-
-
     MainWindow getMainWindow() {
         return mainWindow;
     }
 
+    private GameWorld injectedGameWorld;
 
     /**
      * May be overridden for custom game world
+     *
      * @return
      */
-    public GameWorld createGameWorld()
-    {
-        return new GameWorld();
+    public GameWorld getNewGameWorld() {
+        if (injectedGameWorld == null)
+            return new GameWorld();
+        else
+            return injectedGameWorld;
     }
 
     /**
@@ -136,7 +126,9 @@ public abstract class GameApplication extends Application {
                 System.setProperty("javafx.platform", "Desktop");
 
             initAppSettings();
-            initLogger();
+
+            if (stateMachine == null) //assuming restart otherwise
+                initLogger();
 
             initMainWindow(stage);
 
@@ -147,6 +139,13 @@ public abstract class GameApplication extends Application {
         } catch (Exception e) {
             handleFatalErrorBeforeLaunch(e);
         }
+    }
+
+    public void reloadGame(GameWorld gameWorld) {
+        injectedGameWorld = gameWorld;
+        injectedGameWorld.setReloaded(true);
+
+        start(mainWindow.getStage());
     }
 
     private class FXGLStartTask extends Task<Void> {
@@ -306,22 +305,24 @@ public abstract class GameApplication extends Application {
             @Override
             public void beforeEnter(State state) {
                 if (state instanceof AppState) {
-                    setScene(((AppState)state).getScene());
+                    setScene(((AppState) state).getScene());
                 } else if (state instanceof SubState) {
-                    getScene().getRoot().getChildren().add(((SubState)state).getView());
+                    getScene().getRoot().getChildren().add(((SubState) state).getView());
                 }
             }
 
             @Override
-            public void entered(State state) { }
+            public void entered(State state) {
+            }
 
             @Override
-            public void beforeExit(State state) { }
+            public void beforeExit(State state) {
+            }
 
             @Override
             public void exited(State state) {
                 if (state instanceof SubState) {
-                    getScene().getRoot().getChildren().remove(((SubState)state).getView());
+                    getScene().getRoot().getChildren().remove(((SubState) state).getView());
                 }
             }
         });
@@ -713,7 +714,7 @@ public abstract class GameApplication extends Application {
     }
 
     public final GameWorld getGameWorld() {
-        return injectableGameWorld != null ? injectableGameWorld : playState.getGameWorld();
+        return playState.getGameWorld();
     }
 
     public final PhysicsWorld getPhysicsWorld() {

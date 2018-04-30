@@ -142,7 +142,9 @@ internal constructor(private val app: GameApplication, scene: FXGLScene) : AppSt
 
         private fun clearPreviousGame() {
             log.debug("Clearing previous game")
-            app.gameWorld.clear()
+
+            if (!app.gameWorld.reloaded)
+                app.gameWorld.clear()
             app.physicsWorld.clear()
             app.physicsWorld.clearCollisionHandlers()
             app.gameScene.clear()
@@ -206,7 +208,7 @@ internal constructor(scene: FXGLScene, app: GameApplication) : AppState(scene) {
 
     init {
         gameState = GameState()
-        gameWorld = app.createGameWorld()
+        gameWorld = app.getNewGameWorld()
         physicsWorld = PhysicsWorld(FXGL.getAppHeight(), FXGL.getProperties().getDouble("physics.ppm"))
 
         gameWorld.addWorldListener(physicsWorld)
