@@ -85,7 +85,6 @@ public class ReloadGameTest extends GameApplication {
 
         Optional<Entity> entity2 = FXGL.getApp().getGameWorld().getEntityByID("test2", 23323);
         assert(!entity2.isPresent());
-k
     }
 
     private void reloadGame() {
