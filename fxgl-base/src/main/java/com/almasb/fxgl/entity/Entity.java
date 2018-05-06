@@ -866,6 +866,7 @@ public class Entity implements Serializable {
     }
 
     private void readObject(java.io.ObjectInputStream stream) throws IOException, ClassNotFoundException {
+        properties = new PropertyMap();
         stream.defaultReadObject();
         components = new ObjectMap<>();
         active = new ReadOnlyBooleanWrapper(stream.readBoolean());

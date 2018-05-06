@@ -229,7 +229,7 @@ public final class AppStateMachine {
      * Set state to PLAYING.
      */
     void startPlayAfterReload(GameWorld gameWorld) {
-        ((PlayState) play).setGameWorld(gameWorld);
+        ((PlayState) play).setNewGameWorld(gameWorld);
         FXGL.getApp().onGameReloaded();
         setState(play);
     }

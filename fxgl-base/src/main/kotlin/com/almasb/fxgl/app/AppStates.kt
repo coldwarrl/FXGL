@@ -143,7 +143,7 @@ internal constructor(private val app: GameApplication, scene: FXGLScene) : AppSt
  * The state in which the player will spend most of the time.
  */
 internal class PlayState
-internal constructor(scene: FXGLScene, app: GameApplication, var gameWorld: GameWorld) : AppState(scene) {
+internal constructor(scene: FXGLScene, app: GameApplication, private var gameWorld: GameWorld) : AppState(scene) {
 
     val gameState: GameState
     val physicsWorld: PhysicsWorld
@@ -155,8 +155,7 @@ internal constructor(scene: FXGLScene, app: GameApplication, var gameWorld: Game
         gameState = GameState()
         physicsWorld = PhysicsWorld(FXGL.getAppHeight(), FXGL.getProperties().getDouble("physics.ppm"))
 
-        gameWorld.addWorldListener(physicsWorld)
-        gameWorld.addWorldListener(gameScene)
+        registerWorldListenesForGameWorld()
 
         if (FXGL.getSettings().isMenuEnabled) {
             input.addEventHandler(KeyEvent.ANY, FXGL.getApp().menuListener as MenuEventHandler)
@@ -171,6 +170,22 @@ internal constructor(scene: FXGLScene, app: GameApplication, var gameWorld: Game
                 }
             }, FXGL.getSettings().menuKey)
         }
+    }
+
+    fun setNewGameWorld(gameWorld: GameWorld)
+    {
+        this.gameWorld = gameWorld
+        registerWorldListenesForGameWorld()
+    }
+
+    fun getGameWorld() = gameWorld
+
+    private fun registerWorldListenesForGameWorld() {
+        gameWorld.addWorldListener(physicsWorld)
+        gameWorld.addWorldListener(gameScene)
+
+        if (gameWorld.isReloaded)
+            gameWorld.entities.forEach { gameWorld.notifyEntityAdded(it) }
     }
 
     override fun onUpdate(tpf: Double) {

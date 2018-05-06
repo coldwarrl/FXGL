@@ -214,7 +214,7 @@ open class GameWorld : Serializable {
         worldListeners.removeValueByIdentity(listener)
     }
 
-    private fun notifyEntityAdded(e: Entity) {
+    fun notifyEntityAdded(e: Entity) {
         for (i in 0 until worldListeners.size()) {
             worldListeners.get(i).onEntityAdded(e)
         }
