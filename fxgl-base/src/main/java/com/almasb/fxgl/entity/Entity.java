@@ -68,6 +68,8 @@ public class Entity implements Serializable {
     private Runnable onActive = null;
     private Runnable onNotActive = null;
 
+    private boolean notSerialize = false;
+
     private boolean updateEnabled = true;
     private boolean updating = false;
 
@@ -916,4 +918,11 @@ public class Entity implements Serializable {
         return false;
     }
 
+    public boolean markedAsNotSerialize() {
+        return notSerialize;
+    }
+
+    public void markAsNotSerializable(boolean notSerialize) {
+        this.notSerialize = notSerialize;
+    }
 }

@@ -58,6 +58,7 @@ public class ReloadGameTest extends GameApplication {
                 .at(200, 300)
                 .with(new IDComponent("test2", 23323))
                 .viewFromNode(new Rectangle(40, 40))
+                .markAsNotSerializable()
                 // 3. add a new instance of component to entity
                 .buildAndAttach(getGameWorld());
     }
@@ -81,6 +82,10 @@ public class ReloadGameTest extends GameApplication {
     protected void onGameReloaded() {
         Entity entity = FXGL.getApp().getGameWorld().getEntityByID("test", 2332).get();
         entity.getView().addNode((new Rectangle(40, 40)));
+
+        Optional<Entity> entity2 = FXGL.getApp().getGameWorld().getEntityByID("test2", 23323);
+        assert(!entity2.isPresent());
+k
     }
 
     private void reloadGame() {

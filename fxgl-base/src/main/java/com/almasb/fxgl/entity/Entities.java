@@ -14,7 +14,6 @@ import com.almasb.fxgl.entity.component.Component;
 import com.almasb.fxgl.parser.tiled.Layer;
 import com.almasb.fxgl.parser.tiled.TiledMap;
 import com.almasb.fxgl.parser.tiled.Tileset;
-import com.almasb.fxgl.physics.BoundingShape;
 import com.almasb.fxgl.physics.HitBox;
 import com.almasb.fxgl.physics.PhysicsComponent;
 import com.almasb.fxgl.texture.AnimatedTexture;
@@ -207,6 +206,12 @@ public final class Entities {
 
         public EntityBuilder renderLayer(RenderLayer layer) {
             entity.getViewComponent().setRenderLayer(layer);
+            return this;
+        }
+
+        public EntityBuilder markAsNotSerializable()
+        {
+            entity.markAsNotSerializable(true);
             return this;
         }
 
