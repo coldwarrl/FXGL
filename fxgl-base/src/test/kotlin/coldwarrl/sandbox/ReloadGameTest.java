@@ -53,6 +53,13 @@ public class ReloadGameTest extends GameApplication {
                 .viewFromNode(new Rectangle(40, 40))
                 // 3. add a new instance of component to entity
                 .buildAndAttach(getGameWorld());
+
+        Entities.builder()
+                .at(200, 300)
+                .with(new IDComponent("test2", 23323))
+                .viewFromNode(new Rectangle(40, 40))
+                // 3. add a new instance of component to entity
+                .buildAndAttach(getGameWorld());
     }
 
     @Override

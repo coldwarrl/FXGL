@@ -30,14 +30,19 @@ class EventBus {
 
     private val eventTriggers = UnorderedArray<EventTrigger<*>>(32)
 
-    private val eventHandlers = object : Group() {
-        override fun toString(): String {
-            return "FXGL.EventBus"
-        }
-    }
+    private var eventHandlers = initEventHandlers()
+
 
     fun onUpdate(tpf: Double) {
         updateTriggers(tpf)
+    }
+
+    private fun initEventHandlers(): Group {
+        return object : Group() {
+            override fun toString(): String {
+                return "FXGL.EventBus"
+            }
+        }
     }
 
     private fun updateTriggers(tpf: Double) {
@@ -143,12 +148,18 @@ class EventBus {
                         // find by name and static modifier
                         .find { it.name == annotation.eventType && Modifier.isStatic(it.modifiers) }
                         // fail if null
-                        ?.get(null) ?: throw IllegalArgumentException("<${annotation.eventType}> public static field not found in ${eventClass}"))
+                        ?.get(null)
+                        ?: throw IllegalArgumentException("<${annotation.eventType}> public static field not found in ${eventClass}"))
                         // ensure that it's EventType
-                        as? EventType<*> ?: throw IllegalArgumentException("<${annotation.eventType}> is not of type EventType<*> in ${eventClass}")
+                        as? EventType<*>
+                        ?: throw IllegalArgumentException("<${annotation.eventType}> is not of type EventType<*> in ${eventClass}")
 
                 addEventHandler(eventTypeObject, EventHandler { method.invoke(instance, it) })
             }
         }
+    }
+
+    fun clear() {
+        eventHandlers = initEventHandlers()
     }
 }

@@ -14,6 +14,7 @@ import com.almasb.fxgl.input.UserAction
 import com.almasb.fxgl.physics.PhysicsWorld
 import com.almasb.fxgl.scene.*
 import com.almasb.fxgl.scene.intro.IntroFinishedEvent
+import javafx.application.Platform
 import javafx.concurrent.Task
 import javafx.event.EventHandler
 import javafx.scene.input.KeyEvent
@@ -155,7 +156,7 @@ internal constructor(scene: FXGLScene, app: GameApplication, private var gameWor
         gameState = GameState()
         physicsWorld = PhysicsWorld(FXGL.getAppHeight(), FXGL.getProperties().getDouble("physics.ppm"))
 
-        registerWorldListenesForGameWorld()
+        registerWorldListenersForGameWorld()
 
         if (FXGL.getSettings().isMenuEnabled) {
             input.addEventHandler(KeyEvent.ANY, FXGL.getApp().menuListener as MenuEventHandler)
@@ -172,20 +173,21 @@ internal constructor(scene: FXGLScene, app: GameApplication, private var gameWor
         }
     }
 
-    fun setNewGameWorld(gameWorld: GameWorld)
-    {
+    fun setNewGameWorld(gameWorld: GameWorld) {
         this.gameWorld = gameWorld
-        registerWorldListenesForGameWorld()
+        registerWorldListenersForGameWorld()
     }
 
     fun getGameWorld() = gameWorld
 
-    private fun registerWorldListenesForGameWorld() {
+    private fun registerWorldListenersForGameWorld() {
         gameWorld.addWorldListener(physicsWorld)
         gameWorld.addWorldListener(gameScene)
 
         if (gameWorld.isReloaded)
-            gameWorld.entities.forEach { gameWorld.notifyEntityAdded(it) }
+            gameWorld.entities.forEach {
+                Platform.runLater { gameWorld.notifyEntityAdded(it) }
+            }
     }
 
     override fun onUpdate(tpf: Double) {
@@ -265,6 +267,7 @@ internal class InitAppTask(private val app: GameApplication, val isReloaded: Boo
         log.debug("Clearing previous game")
 
         app.gameWorld.clear()
+        app.eventBus.clear()
         app.physicsWorld.clear()
         app.physicsWorld.clearCollisionHandlers()
         app.gameScene.clear()
