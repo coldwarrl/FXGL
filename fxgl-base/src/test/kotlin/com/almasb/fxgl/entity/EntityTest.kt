@@ -6,6 +6,8 @@
 
 package com.almasb.fxgl.entity
 
+import coldwarrl.sandbox.Serializer
+import coldwarrl.sandbox.SerializerTest
 import com.almasb.fxgl.app.FXGLMock
 import com.almasb.fxgl.core.math.Vec2
 import com.almasb.fxgl.entity.component.*
@@ -22,10 +24,12 @@ import javafx.scene.shape.Rectangle
 import org.hamcrest.CoreMatchers.*
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.collection.IsIterableContainingInAnyOrder.containsInAnyOrder
+import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
+import java.io.ByteArrayInputStream
 
 /**
  *
@@ -35,6 +39,10 @@ import org.junit.jupiter.api.Test
 class EntityTest {
 
     private lateinit var entity: Entity
+
+    private enum class EntityType {
+        TEST1
+    }
 
     companion object {
         @BeforeAll
@@ -46,6 +54,7 @@ class EntityTest {
     @BeforeEach
     fun setUp() {
         entity = Entity()
+        entity.addComponent(IDComponent("Test", 3))
     }
 
     @Test
@@ -768,6 +777,22 @@ class EntityTest {
 
         assertThat(entity.width, `is`(40.0))
         assertThat(entity.height, `is`(15.0))
+    }
+
+    @Test
+    fun `Serializable`()
+    {
+        entity.positionComponent.x = 1.0
+        entity.type = EntityType.TEST1
+
+        val outputStream = Serializer.serializeToMemory(entity)
+        val entity2 = Serializer.deserializeFromMemory(ByteArrayInputStream(outputStream.toByteArray())) as Entity
+
+        Assertions.assertEquals(1.0, entity2.position.x)
+        Assertions.assertEquals(EntityType.TEST1, entity2.type)
+        Assertions.assertNotNull(entity2.viewComponent)
+        Assertions.assertNotNull(entity2.boundingBoxComponent)
+        Assertions.assertEquals(entity, entity2)
     }
 
     /* SCRIPTS */

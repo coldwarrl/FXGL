@@ -6,11 +6,11 @@
 
 package coldwarrl.sandbox
 
-import com.almasb.fxgl.app.FXGL
 import com.almasb.fxgl.app.FXGLMock
 import com.almasb.fxgl.entity.Entities
 import com.almasb.fxgl.entity.Entity
 import com.almasb.fxgl.entity.GameWorld
+import com.almasb.fxgl.entity.components.IDComponent
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Test
@@ -31,21 +31,31 @@ class SerializerTest {
 
     @Test
     fun `smokeTestEntityTest`() {
-        val e = Entities.builder()
-                .at(100.0, 100.0)
-                .type(EntityType.TEST1)
-                .build()
+        val e = getEntity()
 
         val outputStream = Serializer.serializeToMemory(e)
         val e2 = Serializer.deserializeFromMemory(ByteArrayInputStream(outputStream.toByteArray())) as Entity
 
-        Assertions.assertEquals(3, e2.components.size())
+        Assertions.assertEquals(6, e2.components.size())
+    }
+
+    private fun getEntity(): Entity {
+        return Entities.builder()
+                .at(100.0, 100.0)
+                .type(EntityType.TEST1)
+                .with(IDComponent("test", 2))
+                .build()
     }
 
     @Test
     fun `smokeGameWorldTest`() {
-        val outputStream = Serializer.serializeToMemory(GameWorld())
-        val gameWorld = Serializer.deserializeFromMemory(ByteArrayInputStream(outputStream.toByteArray()))
+        var gameWorld = GameWorld()
+        gameWorld.addEntity(getEntity())
+
+        val outputStream = Serializer.serializeToMemory(gameWorld)
+        gameWorld = Serializer.deserializeFromMemory(ByteArrayInputStream(outputStream.toByteArray())) as GameWorld
+        val entity = gameWorld.getEntitiesByType(EntityType.TEST1).first()
+        Assertions.assertSame(2, entity.id)
     }
 
 }

@@ -113,94 +113,39 @@ internal constructor(private val app: GameApplication, scene: FXGLScene) : AppSt
             loadingFinished = false
         }
     }
+}
 
-    /**
-     * Clears previous game.
-     * Initializes game, physics and UI.
-     * This task is rerun every time the game application is restarted.
-     */
-    private class InitAppTask(private val app: GameApplication) : Task<Void>() {
 
-        companion object {
-            private val log = Logger.get(InitAppTask::class.java)
-        }
+/**
+ * State is active during game reload.
+ */
+internal class ReloadingState
+internal constructor(private val app: GameApplication, scene: FXGLScene) : AppState(scene) {
 
-        override fun call(): Void? {
-            val start = System.nanoTime()
+    lateinit var gameWorld: GameWorld
 
-            clearPreviousGame()
+    override fun onEnter(prevState: State) {
+        val initTask = InitAppTask(app, true)
 
-            initGame()
-            initPhysics()
-            initUI()
-            initComplete()
+        (scene as LoadingScene).bind(initTask)
 
-            log.infof("Game initialization took: %.3f sec", (System.nanoTime() - start) / 1000000000.0)
+        FXGL.getExecutor().execute(initTask)
+    }
 
-            return null
-        }
-
-        private fun clearPreviousGame() {
-            log.debug("Clearing previous game")
-
-            if (!app.gameWorld.reloaded)
-                app.gameWorld.clear()
-            app.physicsWorld.clear()
-            app.physicsWorld.clearCollisionHandlers()
-            app.gameScene.clear()
-            app.gameState.clear()
-            app.masterTimer.clear()
-        }
-
-        private fun initGame() {
-            update("Initializing Game", 0)
-
-            val vars = hashMapOf<String, Any>()
-            app.initGameVars(vars)
-            vars.forEach { name, value -> app.gameState.setValue(name, value) }
-
-            // we just created new game state vars, so inform achievement manager about new vars
-            app.gameplay.achievementManager.rebindAchievements()
-
-            app.internalInitGame()
-        }
-
-        private fun initPhysics() {
-            update("Initializing Physics", 1)
-            app.initPhysics()
-        }
-
-        private fun initUI() {
-            update("Initializing UI", 2)
-            app.initUI()
-        }
-
-        private fun initComplete() {
-            update("Initialization Complete", 3)
-        }
-
-        private fun update(message: String, step: Int) {
-            log.debug(message)
-            updateMessage(message)
-            updateProgress(step.toLong(), 3)
-        }
-
-        override fun failed() {
-            Thread.getDefaultUncaughtExceptionHandler()
-                    .uncaughtException(Thread.currentThread(), exception ?: RuntimeException("Initialization failed"))
-        }
+    override fun onUpdate(tpf: Double) {
+        app.stateMachine.startPlayAfterReload(gameWorld)
     }
 }
+
 
 /**
  * State is active when the game is being played.
  * The state in which the player will spend most of the time.
  */
 internal class PlayState
-internal constructor(scene: FXGLScene, app: GameApplication) : AppState(scene) {
+internal constructor(scene: FXGLScene, app: GameApplication, var gameWorld: GameWorld) : AppState(scene) {
 
     val gameState: GameState
-    val gameWorld: GameWorld
     val physicsWorld: PhysicsWorld
 
     val gameScene: GameScene
@@ -208,7 +153,6 @@ internal constructor(scene: FXGLScene, app: GameApplication) : AppState(scene) {
 
     init {
         gameState = GameState()
-        gameWorld = app.getNewGameWorld()
         physicsWorld = PhysicsWorld(FXGL.getAppHeight(), FXGL.getProperties().getDouble("physics.ppm"))
 
         gameWorld.addWorldListener(physicsWorld)
@@ -273,5 +217,81 @@ internal constructor(scene: FXGLScene) : AppState(scene) {
 
     init {
         input.addEventHandler(KeyEvent.ANY, FXGL.getApp().menuListener as MenuEventHandler)
+    }
+}
+
+/**
+ * Clears previous game.
+ * Initializes game, physics and UI.
+ * This task is rerun every time the game application is restarted.
+ */
+internal class InitAppTask(private val app: GameApplication, val isReloaded: Boolean = false) : Task<Void>() {
+
+    companion object {
+        private val log = Logger.get(InitAppTask::class.java)
+    }
+
+    override fun call(): Void? {
+        val start = System.nanoTime()
+
+        clearPreviousGame()
+
+        initGame()
+        initPhysics()
+        initUI()
+        initComplete()
+
+        log.infof("Game initialization took: %.3f sec", (System.nanoTime() - start) / 1000000000.0)
+
+        return null
+    }
+
+    private fun clearPreviousGame() {
+        log.debug("Clearing previous game")
+
+        app.gameWorld.clear()
+        app.physicsWorld.clear()
+        app.physicsWorld.clearCollisionHandlers()
+        app.gameScene.clear()
+        app.gameState.clear()
+        app.masterTimer.clear()
+    }
+
+    private fun initGame() {
+        update("Initializing Game", 0)
+
+        val vars = hashMapOf<String, Any>()
+        app.initGameVars(vars)
+        vars.forEach { name, value -> app.gameState.setValue(name, value) }
+
+        // we just created new game state vars, so inform achievement manager about new vars
+        app.gameplay.achievementManager.rebindAchievements()
+
+        app.internalInitGame(isReloaded)
+    }
+
+    private fun initPhysics() {
+        update("Initializing Physics", 1)
+        app.initPhysics()
+    }
+
+    private fun initUI() {
+        update("Initializing UI", 2)
+        app.initUI()
+    }
+
+    private fun initComplete() {
+        update("Initialization Complete", 3)
+    }
+
+    private fun update(message: String, step: Int) {
+        log.debug(message)
+        updateMessage(message)
+        updateProgress(step.toLong(), 3)
+    }
+
+    override fun failed() {
+        Thread.getDefaultUncaughtExceptionHandler()
+                .uncaughtException(Thread.currentThread(), exception ?: RuntimeException("Initialization failed"))
     }
 }

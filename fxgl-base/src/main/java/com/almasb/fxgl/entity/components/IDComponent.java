@@ -9,7 +9,10 @@ package com.almasb.fxgl.entity.components;
 import com.almasb.fxgl.entity.component.Component;
 import com.almasb.fxgl.entity.component.SerializableComponent;
 import com.almasb.fxgl.io.serialization.Bundle;
+import javafx.beans.property.SimpleDoubleProperty;
 import org.jetbrains.annotations.NotNull;
+
+import java.io.IOException;
 
 /**
  * Adds ID to an entity, so it can be uniquely identified.
@@ -26,7 +29,7 @@ public class IDComponent extends Component implements SerializableComponent {
      * The combination of name and id must be unique.
      *
      * @param name string representation of entity name
-     * @param id numeric id that uniquely identifies the entity with given name
+     * @param id   numeric id that uniquely identifies the entity with given name
      */
     public IDComponent(String name, int id) {
         this.name = name;
@@ -62,12 +65,26 @@ public class IDComponent extends Component implements SerializableComponent {
     @Override
     public boolean equals(Object obj) {
         // just assume it's IDComponent
-        return ((IDComponent)obj).getFullID().equals(getFullID());
+        if (obj instanceof IDComponent)
+            return ((IDComponent) obj).getFullID().equals(getFullID());
+        else return false;
     }
 
     @Override
     public String toString() {
         return getFullID();
+    }
+
+    private void writeObject(java.io.ObjectOutputStream stream)
+            throws IOException {
+        stream.defaultWriteObject();
+        writeObject(this, stream);
+    }
+
+    private void readObject(java.io.ObjectInputStream stream)
+            throws IOException, ClassNotFoundException {
+        stream.defaultReadObject();
+        readObject(this, stream);
     }
 
     @Override

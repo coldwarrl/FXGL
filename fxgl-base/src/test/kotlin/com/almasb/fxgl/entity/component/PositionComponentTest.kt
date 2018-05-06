@@ -6,18 +6,24 @@
 
 package com.almasb.fxgl.entity.component
 
+import coldwarrl.sandbox.Serializer
+import com.almasb.fxgl.app.FXGLMock
 import com.almasb.fxgl.entity.Entity
+import com.almasb.fxgl.entity.components.IDComponent
 import com.almasb.fxgl.entity.components.PositionComponent
 import com.almasb.fxgl.io.serialization.Bundle
+import com.almasb.fxgl.ui.Position
 import javafx.geometry.Point2D
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 
 import org.hamcrest.CoreMatchers.`is`
 import org.hamcrest.MatcherAssert.assertThat
+import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Assertions.assertAll
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.function.Executable
+import java.io.ByteArrayInputStream
 
 class PositionComponentTest {
 
@@ -25,6 +31,7 @@ class PositionComponentTest {
 
     @BeforeEach
     fun setUp() {
+        FXGLMock.mock()
         position = PositionComponent()
     }
 
@@ -33,7 +40,6 @@ class PositionComponentTest {
         // mock entity
         val e = Entity()
         e.position = Point2D(55.0, 35.0)
-
 
         assertAll(
                 Executable { assertThat(e.positionComponent.getGridX(25), `is`(2)) },
@@ -117,4 +123,20 @@ class PositionComponentTest {
 
         assertThat(position2.value, `is`(Point2D(33.0, -33.0)))
     }
+
+
+    @Test
+    fun `Serializable`()
+    {
+        val entity = Entity()
+        entity.addComponent(IDComponent("Test", 2))
+        position.value = Point2D(33.0, -33.0)
+        position.entity = entity
+
+        val outputStream = Serializer.serializeToMemory(position)
+        val position2 = Serializer.deserializeFromMemory(ByteArrayInputStream(outputStream.toByteArray())) as PositionComponent
+
+        Assertions.assertEquals(position.value, position2.value)
+    }
+
 }

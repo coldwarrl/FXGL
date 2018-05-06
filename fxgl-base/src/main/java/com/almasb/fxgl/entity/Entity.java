@@ -28,6 +28,7 @@ import java.io.Serializable;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -861,7 +862,7 @@ public class Entity implements Serializable {
         stream.defaultWriteObject();
         stream.writeBoolean(active.get());
         stream.writeObject(components.values().toList().stream().filter(c -> c instanceof SerializableComponent)
-        .collect(Collectors.toList()));
+                .collect(Collectors.toList()));
     }
 
     private void readObject(java.io.ObjectInputStream stream) throws IOException, ClassNotFoundException {
@@ -869,7 +870,12 @@ public class Entity implements Serializable {
         components = new ObjectMap<>();
         active = new ReadOnlyBooleanWrapper(stream.readBoolean());
         List<Component> componentsStream = (List<Component>) stream.readObject();
-        componentsStream.forEach(c-> components.put(c.getClass(), c));
+        componentsStream.forEach(c -> components.put(c.getClass(), c));
+
+        view = new ViewComponent();
+        bbox = new BoundingBoxComponent();
+        addComponent(view);
+        addComponent(bbox);
     }
 
 
@@ -897,4 +903,16 @@ public class Entity implements Serializable {
     public String getModelId() {
         return modelId;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Entity entity = (Entity) o;
+
+        if (this.hasComponent(IDComponent.class) && entity.hasComponent(IDComponent.class))
+            return Objects.equals(getId(), entity.getId());
+        return false;
+    }
+
 }

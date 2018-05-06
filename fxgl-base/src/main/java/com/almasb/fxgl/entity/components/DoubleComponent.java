@@ -91,12 +91,14 @@ public abstract class DoubleComponent extends Component implements SerializableC
 
     private void writeObject(java.io.ObjectOutputStream stream)
             throws IOException {
+        writeObject(this, stream);
         stream.writeDouble(getValue());
     }
 
     private void readObject(java.io.ObjectInputStream stream)
             throws IOException, ClassNotFoundException {
 
+        readObject(this, stream);
         property = new SimpleDoubleProperty();
         setValue(stream.readDouble());
     }

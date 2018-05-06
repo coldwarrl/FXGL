@@ -16,6 +16,8 @@
 
 package com.almasb.fxgl.extra.ai.fsm;
 
+import java.io.Serializable;
+
 /**
  * The state of a state machine defines the logic of the entities that enter, exit and last this state.
  * Additionally, a state may be delegated by an entity to handle its messages.
@@ -23,7 +25,7 @@ package com.almasb.fxgl.extra.ai.fsm;
  * @param <E> is the type of the entity handled by this state machine
  * @author davebaol
  */
-public interface State<E> {
+public interface State<E> extends Serializable {
 
     /**
      * This method will execute when the state is entered.

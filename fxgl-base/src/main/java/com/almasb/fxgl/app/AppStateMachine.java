@@ -8,6 +8,7 @@ package com.almasb.fxgl.app;
 
 import com.almasb.fxgl.core.collection.Array;
 import com.almasb.fxgl.core.logging.Logger;
+import com.almasb.fxgl.entity.GameWorld;
 
 import java.util.ArrayDeque;
 import java.util.Deque;
@@ -25,6 +26,8 @@ public final class AppStateMachine {
     private Array<StateChangeListener> listeners = new Array<>();
 
     private final AppState loading;
+
+    private final AppState reloading;
     private final AppState play;
     private final State dialog;
 
@@ -38,6 +41,7 @@ public final class AppStateMachine {
     private Deque<SubState> subStates = new ArrayDeque<>();
 
     AppStateMachine(AppState loading,
+                    AppState reloading,
                     AppState play,
                     State dialog,
                     AppState intro,
@@ -53,6 +57,7 @@ public final class AppStateMachine {
         this.gameMenu = gameMenu;
 
         this.appState = initial;
+        this.reloading = reloading;
     }
 
     public void addListener(StateChangeListener listener) {
@@ -61,7 +66,7 @@ public final class AppStateMachine {
 
     public void removeListener(StateChangeListener listener) {
         listeners.removeValueByIdentity(listener);
-       }
+    }
 
     /**
      * Can only be called when no substates are present.
@@ -157,6 +162,10 @@ public final class AppStateMachine {
         return loading;
     }
 
+    public State getReloadingState() {
+        return reloading;
+    }
+
     public State getMainMenuState() {
         if (mainMenu == AppState.EMPTY)
             throw new IllegalStateException("Menu is not enabled");
@@ -195,6 +204,12 @@ public final class AppStateMachine {
         setState(loading);
     }
 
+    void startReload(GameWorld reloadedGameWorld) {
+        ((ReloadingState) reloading).setGameWorld(reloadedGameWorld);
+        setState(reloading);
+    }
+
+
     void startGameMenu() {
         setState(gameMenu);
     }
@@ -207,6 +222,15 @@ public final class AppStateMachine {
      * Set state to PLAYING.
      */
     void startPlay() {
+        setState(play);
+    }
+
+    /**
+     * Set state to PLAYING.
+     */
+    void startPlayAfterReload(GameWorld gameWorld) {
+        ((PlayState) play).setGameWorld(gameWorld);
+        FXGL.getApp().onGameReloaded();
         setState(play);
     }
 

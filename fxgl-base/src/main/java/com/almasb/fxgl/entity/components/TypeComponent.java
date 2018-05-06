@@ -12,6 +12,7 @@ import com.almasb.fxgl.entity.component.SerializableComponent;
 import com.almasb.fxgl.io.serialization.Bundle;
 import org.jetbrains.annotations.NotNull;
 
+import java.io.IOException;
 import java.io.Serializable;
 
 /**
@@ -72,6 +73,20 @@ public class TypeComponent extends ObjectComponent<Serializable>
     @Override
     public TypeComponent copy() {
         return new TypeComponent(getValue());
+    }
+
+    private void writeObject(java.io.ObjectOutputStream stream)
+            throws IOException {
+        stream.defaultWriteObject();
+        writeObjectComponent(stream);
+        writeObject(this, stream);
+    }
+
+    private void readObject(java.io.ObjectInputStream stream)
+            throws IOException, ClassNotFoundException {
+        stream.defaultReadObject();
+        readObjectComponent(stream);
+        readObject(this, stream);
     }
 
     private static class SObject implements Serializable {

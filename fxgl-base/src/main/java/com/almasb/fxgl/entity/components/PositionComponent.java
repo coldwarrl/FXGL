@@ -235,6 +235,7 @@ public class PositionComponent extends Component
 
     private void writeObject(java.io.ObjectOutputStream stream)
             throws IOException {
+        writeObject(this, stream);
         stream.writeDouble(x.doubleValue());
         stream.writeDouble(y.doubleValue());
     }
@@ -242,6 +243,7 @@ public class PositionComponent extends Component
     private void readObject(java.io.ObjectInputStream stream)
             throws IOException, ClassNotFoundException {
 
+        readObject(this, stream);
         x = new SimpleDoubleProperty();
         y = new SimpleDoubleProperty();
 

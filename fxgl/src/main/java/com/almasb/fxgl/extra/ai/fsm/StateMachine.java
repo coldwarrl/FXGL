@@ -16,6 +16,8 @@
 
 package com.almasb.fxgl.extra.ai.fsm;
 
+import java.io.Serializable;
+
 /**
  * A state machine manages the state transitions of its entity.
  * Additionally, the state machine may be delegated by the entity to handle its messages.
@@ -24,7 +26,7 @@ package com.almasb.fxgl.extra.ai.fsm;
  * @param <S> the type of the states of this state machine
  * @author davebaol
  */
-public interface StateMachine<E, S extends State<E>> {
+public interface StateMachine<E, S extends State<E>> extends Serializable {
 
     /**
      * Updates the state machine.

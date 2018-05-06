@@ -13,6 +13,8 @@ import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import org.jetbrains.annotations.NotNull;
 
+import java.io.IOException;
+
 /**
  * Represents an int value based component.
  * <p>
@@ -86,6 +88,20 @@ public abstract class IntegerComponent extends Component implements Serializable
     public void read(@NotNull Bundle bundle) {
         setValue(bundle.get("value"));
     }
+
+    private void writeObject(java.io.ObjectOutputStream stream)
+            throws IOException {
+        stream.defaultWriteObject();
+        writeObject(this, stream);
+    }
+
+    private void readObject(java.io.ObjectInputStream stream)
+            throws IOException, ClassNotFoundException {
+
+        stream.defaultReadObject();
+        readObject(this, stream);
+    }
+
 
     @Override
     public String toString() {

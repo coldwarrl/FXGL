@@ -20,6 +20,7 @@ import com.almasb.fxgl.entity.components.TimeComponent
 import com.almasb.fxgl.parser.tiled.TiledMap
 import com.almasb.fxgl.util.Optional
 import com.almasb.fxgl.util.Predicate
+import com.almasb.fxgl.util.Serializer
 import javafx.beans.property.ObjectProperty
 import javafx.beans.property.SimpleDoubleProperty
 import javafx.beans.property.SimpleObjectProperty
@@ -37,7 +38,7 @@ import java.io.Serializable
 open class GameWorld : Serializable {
 
     @Transient
-    var reloaded = false
+    var isReloaded = false
 
     companion object {
         private const val INITIAL_CAPACITY = 32

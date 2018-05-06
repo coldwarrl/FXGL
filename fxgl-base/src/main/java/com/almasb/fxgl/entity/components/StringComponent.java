@@ -13,6 +13,8 @@ import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import org.jetbrains.annotations.NotNull;
 
+import java.io.IOException;
+
 /**
  * Represents a String value based component.
  * <p>
@@ -85,6 +87,18 @@ public abstract class StringComponent extends Component implements SerializableC
     @Override
     public void read(@NotNull Bundle bundle) {
         setValue(bundle.get("value"));
+    }
+
+    private void writeObject(java.io.ObjectOutputStream stream)
+            throws IOException {
+        stream.defaultWriteObject();
+        writeObject(this, stream);
+    }
+
+    private void readObject(java.io.ObjectInputStream stream)
+            throws IOException, ClassNotFoundException {
+        stream.defaultReadObject();
+        readObject(this, stream);
     }
 
     @Override

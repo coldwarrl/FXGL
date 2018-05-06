@@ -30,7 +30,6 @@ import com.almasb.fxgl.saving.SaveEvent;
 import com.almasb.fxgl.scene.FXGLScene;
 import com.almasb.fxgl.scene.GameScene;
 import com.almasb.fxgl.scene.SceneFactory;
-import com.almasb.fxgl.scene.StartupScene;
 import com.almasb.fxgl.scene.menu.MenuEventListener;
 import com.almasb.fxgl.settings.GameSettings;
 import com.almasb.fxgl.settings.ReadOnlyGameSettings;
@@ -39,6 +38,7 @@ import com.almasb.fxgl.time.Timer;
 import com.almasb.fxgl.ui.Display;
 import com.almasb.fxgl.ui.ErrorDialog;
 import com.almasb.fxgl.ui.UIFactory;
+import com.almasb.fxgl.util.Serializer;
 import javafx.animation.AnimationTimer;
 import javafx.application.Application;
 import javafx.application.Platform;
@@ -48,10 +48,6 @@ import javafx.concurrent.Task;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.control.Menu;
 import javafx.stage.Stage;
-import javafx.stage.StageStyle;
-import tornadofx.FX;
-import tornadofx.UIComponent;
-import tornadofx.FX;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -101,18 +97,23 @@ public abstract class GameApplication extends Application {
         return mainWindow;
     }
 
+    public void setInjectedGameWorld(GameWorld injectedGameWorld) {
+        this.injectedGameWorld = injectedGameWorld;
+    }
+    public GameWorld getInjectedGameWorld() {
+        return injectedGameWorld;
+    }
     private GameWorld injectedGameWorld;
+
+
 
     /**
      * May be overridden for custom game world
      *
      * @return
      */
-    public GameWorld getNewGameWorld() {
-        if (injectedGameWorld == null)
-            return new GameWorld();
-        else
-            return injectedGameWorld;
+    public GameWorld createGameWorld() {
+        return new GameWorld();
     }
 
     /**
@@ -141,11 +142,19 @@ public abstract class GameApplication extends Application {
         }
     }
 
-    public void reloadGame(GameWorld gameWorld) {
-        injectedGameWorld = gameWorld;
-        injectedGameWorld.setReloaded(true);
+    public void saveGame(String path) {
+        log.debug("Saving game from " + path);
+        Serializer.INSTANCE.serializeToFile(getGameWorld(), path);
+    }
 
-        start(mainWindow.getStage());
+
+    public void reloadGame(String path) {
+        log.debug("Loading game from " + path);
+
+        GameWorld reloadedGameWorld = (GameWorld) Serializer.INSTANCE.deserializeFromFile(path);
+        reloadedGameWorld.setReloaded(true);
+
+        stateMachine.startReload(reloadedGameWorld);
     }
 
     private class FXGLStartTask extends Task<Void> {
@@ -285,7 +294,8 @@ public abstract class GameApplication extends Application {
         AppState initial = new StartupState(this, sceneFactory.newStartup());
 
         AppState loading = new LoadingState(this, sceneFactory.newLoadingScene());
-        AppState play = new PlayState(sceneFactory.newGameScene(getWidth(), getHeight()), this);
+        AppState reloading = new ReloadingState(this, sceneFactory.newLoadingScene());
+        PlayState play = new PlayState(sceneFactory.newGameScene(getWidth(), getHeight()), this, createGameWorld());
 
         // reasonable hack to trigger dialog state init before intro and menus
         DialogSubState.INSTANCE.getView();
@@ -299,7 +309,7 @@ public abstract class GameApplication extends Application {
         AppState gameMenu = getSettings().isMenuEnabled()
                 ? new GameMenuState(sceneFactory.newGameMenu(this)) : AppState.EMPTY;
 
-        stateMachine = new AppStateMachine(loading, play, DialogSubState.INSTANCE, intro, mainMenu, gameMenu, initial);
+        stateMachine = new AppStateMachine(loading, reloading, play, DialogSubState.INSTANCE, intro, mainMenu, gameMenu, initial);
 
         stateMachine.addListener(new StateChangeListener() {
             @Override
@@ -362,7 +372,8 @@ public abstract class GameApplication extends Application {
 
         if (FXGL.isDesktop()) {
             // 1. register system actions
-            SystemActions.INSTANCE.bind(getInput());
+            if (!getGameWorld().isReloaded())
+                SystemActions.INSTANCE.bind(getInput());
         }
 
         // 2. register user actions
@@ -492,12 +503,15 @@ public abstract class GameApplication extends Application {
     /**
      * Callback to finalize init game.
      * The data file to load will be set before this call.
+     * @param reloaded
      */
-    void internalInitGame() {
-        if (loadDataFile == DataFile.getEMPTY()) {
-            initGame();
-        } else {
-            loadState(loadDataFile);
+    void internalInitGame(boolean reloaded) {
+        if (!reloaded) {
+            if (loadDataFile == DataFile.getEMPTY()) {
+                initGame();
+            } else {
+                loadState(loadDataFile);
+            }
         }
     }
 
@@ -661,6 +675,15 @@ public abstract class GameApplication extends Application {
     protected void onPostUpdate(double tpf) {
     }
 
+
+    /**
+     * Called when game is reloaded
+     */
+    protected void onGameReloaded()
+    {
+
+    }
+
     /**
      * Called when MenuEvent.SAVE occurs.
      *
@@ -714,7 +737,7 @@ public abstract class GameApplication extends Application {
     }
 
     public final GameWorld getGameWorld() {
-        return playState.getGameWorld();
+        return injectedGameWorld != null ? injectedGameWorld : playState.getGameWorld();
     }
 
     public final PhysicsWorld getPhysicsWorld() {

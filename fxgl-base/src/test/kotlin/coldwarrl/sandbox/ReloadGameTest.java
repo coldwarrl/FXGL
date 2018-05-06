@@ -6,70 +6,79 @@
 
 package coldwarrl.sandbox;
 
+import com.almasb.fxgl.app.FXGL;
 import com.almasb.fxgl.app.GameApplication;
 import com.almasb.fxgl.entity.Entities;
 import com.almasb.fxgl.entity.Entity;
 import com.almasb.fxgl.entity.GameWorld;
 import com.almasb.fxgl.entity.components.IDComponent;
+import com.almasb.fxgl.entity.view.EntityView;
 import com.almasb.fxgl.input.Input;
 import com.almasb.fxgl.input.UserAction;
+import com.almasb.fxgl.io.serialization.Bundle;
+import com.almasb.fxgl.saving.DataFile;
 import com.almasb.fxgl.settings.GameSettings;
+import com.almasb.fxgl.settings.MenuItem;
+import com.almasb.fxgl.util.Optional;
+import javafx.geometry.Point2D;
 import javafx.scene.input.KeyCode;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Rectangle;
+import manual.RangeTest;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.util.EnumSet;
 
 /**
  * Shows how to use input service and bind actions to triggers.
  */
 public class ReloadGameTest extends GameApplication {
 
+
     @Override
     protected void initSettings(GameSettings settings) {
         settings.setWidth(800);
         settings.setHeight(600);
-        settings.setTitle("InputSample");
+        settings.setTitle("EntityComponentSample");
         settings.setVersion("0.1");
     }
 
     @Override
+    protected void initGame() {
+        if (getGameWorld().isReloaded()) return;
+        Entities.builder()
+                .at(400, 300)
+                .with(new IDComponent("test", 2332))
+                .viewFromNode(new Rectangle(40, 40))
+                // 3. add a new instance of component to entity
+                .buildAndAttach(getGameWorld());
+    }
+
+    @Override
     protected void initInput() {
-        // 1. get input service
+        if (getGameWorld().isReloaded()) return;
         Input input = getInput();
 
-        // 2. add key/mouse bound actions
-        // when app is running press F to see output to console
-        input.addAction(new UserAction("Print Line") {
-            @Override
-            protected void onActionBegin() {
-                reloadGame();
-            }
 
+        input.addAction(new UserAction("Move Down") {
             @Override
             protected void onAction() {
-                System.out.println("On Action");
+               reloadGame();
             }
-
-            @Override
-            protected void onActionEnd() {
-                System.out.println("Action End");
-            }
-        }, KeyCode.F);
+        }, KeyCode.S);
 
     }
 
+    @Override
+    protected void onGameReloaded() {
+        Entity entity = FXGL.getApp().getGameWorld().getEntityByID("test", 2332).get();
+        entity.getView().addNode((new Rectangle(40, 40)));
+    }
+
     private void reloadGame() {
-        Entity entity = Entities.builder()
-                .with(new IDComponent("test", 1))
-                .buildAndAttach();
-
-        ByteArrayOutputStream stream = Serializer.INSTANCE.serializeToMemory(getGameWorld());
-        GameWorld gameWorldClone = (GameWorld) Serializer.INSTANCE.deserializeFromMemory((new ByteArrayInputStream(stream.toByteArray())));
-
-        reloadGame(gameWorldClone);
-        Entity entity2 = gameWorldClone.getEntities().get(0);
-        System.out.println(entity2.getComponent(IDComponent.class).getID());
-
+        Serializer.INSTANCE.serializeToFile(FXGL.getApp().getGameWorld(), "reload_game_test.sav");
+        reloadGame("reload_game_test.sav");
     }
 
     public static void main(String[] args) {

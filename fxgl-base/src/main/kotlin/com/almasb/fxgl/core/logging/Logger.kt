@@ -6,6 +6,7 @@
 
 package com.almasb.fxgl.core.logging
 
+import java.io.Serializable
 import java.time.LocalTime
 
 /**
@@ -14,7 +15,7 @@ import java.time.LocalTime
  * @author Almas Baimagambetov (almaslvl@gmail.com)
  */
 class Logger
-private constructor(private val name: String) {
+private constructor(private val name: String): Serializable {
 
     companion object {
 

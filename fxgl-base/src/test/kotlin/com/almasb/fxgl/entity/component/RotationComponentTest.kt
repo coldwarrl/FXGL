@@ -6,12 +6,15 @@
 
 package com.almasb.fxgl.entity.component
 
+import coldwarrl.sandbox.Serializer
 import com.almasb.fxgl.entity.components.RotationComponent
 import javafx.geometry.Point2D
 import org.hamcrest.CoreMatchers.`is`
 import org.hamcrest.MatcherAssert.assertThat
+import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
+import java.io.ByteArrayInputStream
 
 /**
  *
@@ -66,4 +69,17 @@ class RotationComponentTest {
 
         assertTrue(rot1 != rot2)
     }
+
+
+    @Test
+    fun `Serializable`()
+    {
+        val rotation = RotationComponent(35.0)
+
+        val outputStream = Serializer.serializeToMemory(rotation)
+        val rotation2 = Serializer.deserializeFromMemory(ByteArrayInputStream(outputStream.toByteArray())) as RotationComponent
+
+        Assertions.assertEquals(rotation.value, rotation2.value)
+    }
+
 }

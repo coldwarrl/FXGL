@@ -25,14 +25,15 @@ class AppStateMachineTest {
 
     companion object {
         @BeforeAll
-        @JvmStatic fun before() {
+        @JvmStatic
+        fun before() {
             FXGLMock.mock()
         }
     }
 
     @BeforeEach
     fun setUp() {
-        stateMachine = AppStateMachine(Loading, Play, Dialog, Intro, MainMenu, GameMenu, Initial)
+        stateMachine = AppStateMachine(Loading, Reloading, Play, Dialog, Intro, MainMenu, GameMenu, Initial)
     }
 
     @Test
@@ -183,7 +184,7 @@ class AppStateMachineTest {
 
     @Test
     fun `Throw if intro or menus not available`() {
-        stateMachine = AppStateMachine(Loading, Play, Dialog, AppState.EMPTY, AppState.EMPTY, AppState.EMPTY, Initial)
+        stateMachine = AppStateMachine(Loading, Reloading, Play, Dialog, AppState.EMPTY, AppState.EMPTY, AppState.EMPTY, Initial)
 
         assertThrows(IllegalStateException::class.java, {
             stateMachine.introState
@@ -206,11 +207,12 @@ class AppStateMachineTest {
             override fun onUpdate(tpf: Double) {
                 count += tpf
             }
-        }, object : AppState(object : FXGLScene() {}) {
-            override fun onUpdate(tpf: Double) {
-                count -= tpf
-            }
-        }, Dialog, Intro, MainMenu, GameMenu, Initial)
+        }, Reloading,
+                object : AppState(object : FXGLScene() {}) {
+                    override fun onUpdate(tpf: Double) {
+                        count -= tpf
+                    }
+                }, Dialog, Intro, MainMenu, GameMenu, Initial)
 
         stateMachine.startPlay()
 
@@ -226,6 +228,7 @@ class AppStateMachineTest {
     }
 
     private object Loading : AppState(object : FXGLScene() {})
+    private object Reloading : AppState(object : FXGLScene() {})
     private object Play : AppState(object : FXGLScene() {})
     private object Dialog : SubState()
     private object Intro : AppState(object : FXGLScene() {})
