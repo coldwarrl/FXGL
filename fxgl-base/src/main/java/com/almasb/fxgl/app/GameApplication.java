@@ -101,11 +101,12 @@ public abstract class GameApplication extends Application {
     public void setInjectedGameWorld(GameWorld injectedGameWorld) {
         this.injectedGameWorld = injectedGameWorld;
     }
+
     public GameWorld getInjectedGameWorld() {
         return injectedGameWorld;
     }
-    private GameWorld injectedGameWorld;
 
+    private GameWorld injectedGameWorld;
 
 
     /**
@@ -144,15 +145,17 @@ public abstract class GameApplication extends Application {
     }
 
     public void saveGame(String path) {
-        prepareSaveGame();
         log.debug("Saving game from " + path);
         Serializer.INSTANCE.serializeToFile(getGameWorld(), path);
     }
 
-    private void prepareSaveGame()
-    {
-        getGameWorld().getEntities().stream().filter(Entity::markedAsNotSerialize)
-                .forEach(entity -> getGameWorld().removeEntity(entity));
+    private void prepareReloadedGameWorld(GameWorld gameWorld) {
+        gameWorld.getEntities()
+                .forEach(entity -> entity.setWorld(gameWorld));
+
+        gameWorld.getEntities().stream()
+                .filter(Entity::markedAsNotSerialize)
+                .forEach(entity -> Platform.runLater(() -> gameWorld.removeEntity(entity)));
     }
 
     public void reloadGame(String path) {
@@ -160,6 +163,7 @@ public abstract class GameApplication extends Application {
 
         GameWorld reloadedGameWorld = (GameWorld) Serializer.INSTANCE.deserializeFromFile(path);
         reloadedGameWorld.setReloaded(true);
+        prepareReloadedGameWorld(reloadedGameWorld);
 
         stateMachine.startReload(reloadedGameWorld);
     }
@@ -510,6 +514,7 @@ public abstract class GameApplication extends Application {
     /**
      * Callback to finalize init game.
      * The data file to load will be set before this call.
+     *
      * @param reloaded
      */
     void internalInitGame(boolean reloaded) {
@@ -686,8 +691,7 @@ public abstract class GameApplication extends Application {
     /**
      * Called when game is reloaded
      */
-    protected void onGameReloaded()
-    {
+    protected void onGameReloaded() {
 
     }
 

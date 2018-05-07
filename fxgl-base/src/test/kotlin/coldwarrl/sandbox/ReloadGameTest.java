@@ -13,6 +13,7 @@ import com.almasb.fxgl.entity.Entity;
 import com.almasb.fxgl.entity.GameWorld;
 import com.almasb.fxgl.entity.components.IDComponent;
 import com.almasb.fxgl.entity.view.EntityView;
+import com.almasb.fxgl.gameplay.notification.NotificationService;
 import com.almasb.fxgl.input.Input;
 import com.almasb.fxgl.input.UserAction;
 import com.almasb.fxgl.io.serialization.Bundle;
@@ -80,6 +81,8 @@ public class ReloadGameTest extends GameApplication {
 
     @Override
     protected void onGameReloaded() {
+
+        FXGL.getNotificationService().pushNotification("reload");
         Entity entity = FXGL.getApp().getGameWorld().getEntityByID("test", 2332).get();
         entity.getView().addNode((new Rectangle(40, 40)));
 

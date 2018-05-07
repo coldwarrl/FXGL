@@ -97,6 +97,11 @@ public class Entity implements Serializable {
         return world;
     }
 
+    public void setWorld(GameWorld world) {
+        this.world = world;
+    }
+
+
     /**
      * Initializes this entity.
      *
