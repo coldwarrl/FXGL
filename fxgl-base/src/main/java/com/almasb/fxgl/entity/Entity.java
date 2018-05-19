@@ -18,11 +18,14 @@ import com.almasb.fxgl.entity.view.EntityView;
 import com.almasb.fxgl.io.serialization.Bundle;
 import com.almasb.fxgl.script.Script;
 import com.almasb.fxgl.util.Optional;
+import com.almasb.fxgl.util.Serializer;
 import javafx.beans.property.*;
 import javafx.geometry.Point2D;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.Node;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.Serializable;
 import java.lang.reflect.Method;
@@ -862,6 +865,13 @@ public class Entity implements Serializable {
      */
     public void load(Bundle bundle) {
         EntitySerializer.INSTANCE.load(this, bundle);
+    }
+
+
+    @Override
+    protected Object clone() throws CloneNotSupportedException {
+        ByteArrayOutputStream outputStream = Serializer.INSTANCE.serializeToMemory(this);
+        return Serializer.INSTANCE.deserializeFromMemory(new ByteArrayInputStream(outputStream.toByteArray()));
     }
 
     private void writeObject(java.io.ObjectOutputStream stream)
