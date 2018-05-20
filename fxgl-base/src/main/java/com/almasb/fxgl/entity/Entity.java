@@ -33,7 +33,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import static com.almasb.fxgl.util.BackportKt.forEach;
 
@@ -868,10 +867,9 @@ public class Entity implements Serializable {
     }
 
 
-    @Override
-    protected Object clone() throws CloneNotSupportedException {
+    public Entity cloneEntity() throws CloneNotSupportedException {
         ByteArrayOutputStream outputStream = Serializer.INSTANCE.serializeToMemory(this);
-        return Serializer.INSTANCE.deserializeFromMemory(new ByteArrayInputStream(outputStream.toByteArray()));
+        return (Entity) Serializer.INSTANCE.deserializeFromMemory(new ByteArrayInputStream(outputStream.toByteArray()));
     }
 
     private void writeObject(java.io.ObjectOutputStream stream)

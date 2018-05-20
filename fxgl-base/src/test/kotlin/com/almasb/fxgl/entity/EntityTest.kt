@@ -801,7 +801,7 @@ class EntityTest {
         entity.positionComponent.x = 1.0
         entity.type = EntityType.TEST1
 
-        val entity2 = entity.clone() as Entity
+        val entity2 = entity.cloneEntity() as Entity
 
         Assertions.assertEquals(1.0, entity2.position.x)
         Assertions.assertEquals(EntityType.TEST1, entity2.type)
